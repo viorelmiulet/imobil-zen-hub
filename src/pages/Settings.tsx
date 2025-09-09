@@ -167,36 +167,25 @@ export default function Settings() {
                 <div className="inline-flex items-center p-1 bg-muted rounded-xl border shadow-sm w-fit">
                   <button
                     onClick={() => setTheme("light")}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-w-[85px] justify-center ${
                       theme === "light" 
                         ? "bg-background text-foreground shadow-sm border" 
                         : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
-                    <Sun className="h-4 w-4" />
+                    <Sun className="h-3.5 w-3.5" />
                     <span>Luminos</span>
                   </button>
                   <button
                     onClick={() => setTheme("dark")}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-w-[85px] justify-center ${
                       theme === "dark" 
                         ? "bg-background text-foreground shadow-sm border" 
                         : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
-                    <Moon className="h-4 w-4" />
+                    <Moon className="h-3.5 w-3.5" />
                     <span>Întunecat</span>
-                  </button>
-                  <button
-                    onClick={() => setTheme("system")}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
-                      theme === "system" 
-                        ? "bg-background text-foreground shadow-sm border" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                    }`}
-                  >
-                    <Monitor className="h-4 w-4" />
-                    <span>Sistem</span>
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground">
