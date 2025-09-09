@@ -293,36 +293,49 @@ export default function Properties() {
                   <span className="text-2xl font-bold text-primary">
                     {property.price}
                   </span>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                  <div className="flex items-center space-x-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      title="Vezi detalii"
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-muted-foreground hover:text-foreground"
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
                       onClick={() => handleEditProperty(property)}
+                      title="Editează proprietatea"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          title="Șterge proprietatea"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="bg-card border border-border shadow-hover">
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Șterge proprietatea</AlertDialogTitle>
-                          <AlertDialogDescription>
+                          <AlertDialogTitle className="text-foreground">Șterge proprietatea</AlertDialogTitle>
+                          <AlertDialogDescription className="text-muted-foreground">
                             Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Anulează</AlertDialogCancel>
+                          <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
+                            Anulează
+                          </AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleDeleteProperty(property.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
                           >
                             Șterge
                           </AlertDialogAction>
