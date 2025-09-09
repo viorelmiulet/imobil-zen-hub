@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Building2, Users, TrendingUp, Star, Phone, Mail, MapPin, ExternalLink, Award, Shield, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import heroImage from "@/assets/hero-image.jpg";
-import mvaLogo from "@/assets/mva-logo.png";
+import mvaLogo from "@/assets/mva-logo-new.png";
 
 const CompanyWebsite = () => {
   return (
