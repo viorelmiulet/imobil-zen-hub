@@ -65,14 +65,6 @@ export default function Settings() {
                 <Label htmlFor="phone">Telefon</Label>
                 <Input id="phone" placeholder="+40 123 456 789" defaultValue="+40 722 123 456" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="bio">Biografie</Label>
-                <Textarea 
-                  id="bio" 
-                  placeholder="Descrie-te pe scurt..." 
-                  defaultValue="Agent imobiliar cu peste 5 ani de experiență în București. Specializat în proprietăți rezidențiale și comerciale."
-                />
-              </div>
             </CardContent>
           </Card>
 
