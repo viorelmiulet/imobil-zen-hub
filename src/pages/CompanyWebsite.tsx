@@ -15,10 +15,10 @@ const CompanyWebsite = () => {
         <div className="container mx-auto px-6 py-4">
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-14 w-14" />
+              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-12 w-12" />
               <div className="flex flex-col">
-                <span className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">MVA</span>
-                <span className="text-sm text-accent font-medium -mt-1">IMOBILIARE</span>
+                <span className="text-2xl font-bold text-primary tracking-wide">MVA</span>
+                <span className="text-xs text-accent font-medium tracking-[0.2em] uppercase -mt-1">IMOBILIARE</span>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -45,14 +45,16 @@ const CompanyWebsite = () => {
         <div className="absolute inset-0 bg-gradient-hero" />
         
         <div className="relative z-10 container mx-auto px-6 text-center text-white">
-          <Badge className="mb-8 glass text-white border-white/30">
-            ⭐ Agenția #1 în Satisfacția Clienților
+          <Badge className="mb-8 luxury-card text-primary border-accent/30 px-6 py-2">
+            <span className="text-accent mr-2">◆</span>
+            Agenția #1 în Satisfacția Clienților
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            MVA IMOBILIARE
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
+            <span className="text-white">MVA</span>
+            <span className="text-accent"> IMOBILIARE</span>
             <br />
-            <span className="text-3xl md:text-5xl bg-gradient-to-r from-white to-accent bg-clip-text text-transparent">
-              Excelența în servicii imobiliare
+            <span className="text-2xl md:text-4xl font-light text-white/90 tracking-wide">
+              Excelența în servicii imobiliare premium
             </span>
           </h1>
           <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-white/90 leading-relaxed">
@@ -61,12 +63,12 @@ const CompanyWebsite = () => {
             cele mai bune soluții pentru investițiile dumneavoastră.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-10 py-4 shadow-elegant">
+            <Button size="lg" className="bg-accent text-primary hover:bg-accent/90 text-lg px-12 py-6 shadow-luxury font-semibold tracking-wide">
               Descoperă Proprietăți
-              <ArrowRight className="ml-2 h-6 w-6" />
+              <ArrowRight className="ml-3 h-6 w-6" />
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white/30 hover:bg-white/10 text-lg px-10 py-4 backdrop-blur-sm">
-              <Phone className="mr-2 h-6 w-6" />
+            <Button size="lg" variant="outline" className="text-white border-white/40 hover:bg-white/15 text-lg px-12 py-6 backdrop-blur-sm font-semibold tracking-wide">
+              <Phone className="mr-3 h-6 w-6" />
               Consultație Gratuită
             </Button>
           </div>

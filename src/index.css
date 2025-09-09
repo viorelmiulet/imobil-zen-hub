@@ -6,59 +6,61 @@
 
 @layer base {
   :root {
-    /* Modern glass morphism color palette - Deep blues and purples */
-    --background: 210 100% 98%;
-    --foreground: 220 30% 10%;
+    /* Premium luxury color palette - Elegant navy, gold, and champagne */
+    --background: 35 20% 98%;
+    --foreground: 220 25% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 30% 10%;
+    --card-foreground: 220 25% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 10%;
+    --popover-foreground: 220 25% 8%;
 
-    --primary: 243 75% 58%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 243 100% 75%;
+    --primary: 220 30% 15%;
+    --primary-foreground: 35 20% 98%;
+    --primary-glow: 45 80% 65%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 220 30% 10%;
+    --secondary: 35 15% 95%;
+    --secondary-foreground: 220 25% 8%;
 
-    --muted: 210 15% 97%;
-    --muted-foreground: 220 20% 50%;
+    --muted: 35 10% 96%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 280 65% 68%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 80% 65%;
+    --accent-foreground: 220 30% 15%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 90%;
-    --input: 210 15% 90%;
-    --ring: 243 75% 58%;
+    --border: 35 10% 88%;
+    --input: 35 10% 88%;
+    --ring: 45 80% 65%;
 
-    /* Real estate specific colors */
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --info: 243 70% 65%;
+    /* Premium real estate colors */
+    --success: 120 50% 45%;
+    --warning: 35 85% 55%;
+    --info: 220 25% 25%;
 
-    /* Glass morphism gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(243 75% 58%), hsl(280 65% 68%));
-    --gradient-accent: linear-gradient(135deg, hsl(280 65% 68%), hsl(310 60% 75%));
-    --gradient-background: linear-gradient(135deg, hsl(210 100% 98%), hsl(243 50% 95%));
-    --gradient-hero: linear-gradient(135deg, hsl(243 75% 58% / 0.1), hsl(280 65% 68% / 0.1));
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.25), hsl(0 0% 100% / 0.1));
-    --gradient-glass-border: linear-gradient(135deg, hsl(0 0% 100% / 0.3), hsl(0 0% 100% / 0.1));
+    /* Luxury gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 30% 15%), hsl(220 25% 25%));
+    --gradient-accent: linear-gradient(135deg, hsl(45 80% 65%), hsl(35 75% 70%));
+    --gradient-background: linear-gradient(135deg, hsl(35 20% 98%), hsl(45 15% 96%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 30% 15% / 0.9), hsl(220 25% 25% / 0.8));
+    --gradient-luxury: linear-gradient(135deg, hsl(45 80% 65% / 0.1), hsl(35 75% 70% / 0.1));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.4), hsl(0 0% 100% / 0.1));
+    --gradient-glass-border: linear-gradient(135deg, hsl(45 80% 65% / 0.3), hsl(0 0% 100% / 0.2));
 
-    /* Glass morphism shadows and effects */
-    --shadow-elegant: 0 25px 50px -12px hsl(243 75% 58% / 0.3);
-    --shadow-card: 0 8px 32px hsl(220 30% 10% / 0.12);
-    --shadow-hover: 0 20px 40px hsl(243 75% 58% / 0.25);
-    --shadow-glass: 0 8px 32px hsl(220 30% 10% / 0.08);
-    --backdrop-blur: blur(16px);
+    /* Premium shadows and effects */
+    --shadow-elegant: 0 32px 64px -12px hsl(220 30% 15% / 0.35);
+    --shadow-luxury: 0 24px 48px -12px hsl(45 80% 65% / 0.25);
+    --shadow-card: 0 12px 32px hsl(220 30% 15% / 0.1);
+    --shadow-hover: 0 28px 56px hsl(220 30% 15% / 0.2);
+    --shadow-glass: 0 8px 32px hsl(220 30% 15% / 0.06);
+    --backdrop-blur: blur(20px);
 
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Premium animations */
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-luxury: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 
     --radius: 0.5rem;
 
@@ -158,28 +160,37 @@
     border-radius: 3px;
   }
 
-  /* Glass morphism utilities */
+  /* Premium glass morphism utilities */
   .glass {
     background: var(--gradient-glass);
     backdrop-filter: var(--backdrop-blur);
     -webkit-backdrop-filter: var(--backdrop-blur);
-    border: 1px solid hsl(0 0% 100% / 0.2);
+    border: 1px solid var(--gradient-glass-border);
     box-shadow: var(--shadow-glass);
   }
   
   .glass-card {
-    background: hsl(0 0% 100% / 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(0 0% 100% / 0.25);
-    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.1);
+    background: hsl(0 0% 100% / 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(45 80% 65% / 0.2);
+    box-shadow: var(--shadow-card);
   }
   
   .glass-nav {
-    background: hsl(0 0% 100% / 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid hsl(0 0% 100% / 0.15);
+    background: hsl(0 0% 100% / 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid hsl(45 80% 65% / 0.2);
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .luxury-card {
+    background: hsl(0 0% 100% / 0.9);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid hsl(45 80% 65% / 0.3);
+    box-shadow: var(--shadow-luxury);
   }
 
   /* Smooth animations */
