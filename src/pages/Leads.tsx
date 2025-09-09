@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AddLeadDialog } from "@/components/AddLeadDialog";
 
 const leads = [
   {
@@ -123,8 +124,9 @@ export default function Leads() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
+  const [leadsList, setLeadsList] = useState(leads);
 
-  const filteredLeads = leads.filter((lead) => {
+  const filteredLeads = leadsList.filter((lead) => {
     const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.interest.toLowerCase().includes(searchTerm.toLowerCase());
@@ -174,10 +176,11 @@ export default function Leads() {
             Gestionează și urmărește clienții potențiali.
           </p>
         </div>
-        <Button className="bg-gradient-primary hover:opacity-90 shadow-elegant">
-          <Plus className="h-4 w-4 mr-2" />
-          Adaugă Lead
-        </Button>
+        <AddLeadDialog 
+          onLeadAdded={(newLead) => {
+            setLeadsList(prev => [...prev, newLead]);
+          }}
+        />
       </div>
 
       {/* Stats Cards */}
@@ -349,10 +352,11 @@ export default function Leads() {
             <p className="text-muted-foreground text-center mb-4">
               Încearcă să modifici filtrele sau să adaugi un lead nou.
             </p>
-            <Button className="bg-gradient-primary hover:opacity-90">
-              <Plus className="h-4 w-4 mr-2" />
-              Adaugă Primul Lead
-            </Button>
+            <AddLeadDialog 
+              onLeadAdded={(newLead) => {
+                setLeadsList(prev => [...prev, newLead]);
+              }}
+            />
           </CardContent>
         </Card>
       )}

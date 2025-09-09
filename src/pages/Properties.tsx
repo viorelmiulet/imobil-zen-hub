@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -112,8 +113,9 @@ export default function Properties() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [propertiesList, setPropertiesList] = useState(properties);
 
-  const filteredProperties = properties.filter((property) => {
+  const filteredProperties = propertiesList.filter((property) => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || property.status === statusFilter;
@@ -145,10 +147,11 @@ export default function Properties() {
             Gestionează portofoliul de proprietăți al agenției tale.
           </p>
         </div>
-        <Button className="bg-gradient-primary hover:opacity-90 shadow-elegant">
-          <Plus className="h-4 w-4 mr-2" />
-          Adaugă Proprietate
-        </Button>
+        <AddPropertyDialog 
+          onPropertyAdded={(newProperty) => {
+            setPropertiesList(prev => [...prev, newProperty]);
+          }}
+        />
       </div>
 
       {/* Filters */}
@@ -284,10 +287,11 @@ export default function Properties() {
             <p className="text-muted-foreground text-center mb-4">
               Încearcă să modifici filtrele sau să adaugi o proprietate nouă.
             </p>
-            <Button className="bg-gradient-primary hover:opacity-90">
-              <Plus className="h-4 w-4 mr-2" />
-              Adaugă Prima Proprietate
-            </Button>
+            <AddPropertyDialog 
+              onPropertyAdded={(newProperty) => {
+                setPropertiesList(prev => [...prev, newProperty]);
+              }}
+            />
           </CardContent>
         </Card>
       )}
