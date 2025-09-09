@@ -12,9 +12,12 @@ const CompanyWebsite = () => {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Building2 className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-foreground">RealEstate Pro</span>
+            <div className="flex items-center space-x-3">
+              <img src="/src/assets/mva-logo.png" alt="MVA IMOBILIARE" className="h-12 w-12" />
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold text-foreground">MVA</span>
+                <span className="text-sm text-muted-foreground -mt-1">IMOBILIARE</span>
+              </div>
             </div>
             <div className="hidden md:flex items-center space-x-6">
               <a href="#services" className="text-muted-foreground hover:text-foreground transition-colors">Servicii</a>
@@ -35,13 +38,14 @@ const CompanyWebsite = () => {
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
           <Badge className="mb-6 bg-primary/10 text-primary border-primary/20">
-            #1 Agenție Imobiliară București
+            #1 Agenție Imobiliară de Încredere
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Găsește casa perfectă<br />pentru tine și familia ta
+            MVA IMOBILIARE<br />
+            <span className="text-3xl md:text-4xl">Partenerul tău de încredere</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Cu peste 10 ani de experiență și mii de clienți mulțumiți, suntem partenerul tău de încredere în achiziția sau vânzarea proprietăților imobiliare.
+            Experință, profesionalism și dedicare în serviciile imobiliare. Vă ajutăm să găsiți casa perfectă sau să vânzați la prețul optim cu echipa noastră de specialiști.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8">
@@ -137,9 +141,9 @@ const CompanyWebsite = () => {
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Despre RealEstate Pro</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Despre MVA IMOBILIARE</h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Suntem o agenție imobiliară modernă, specializată în proprietăți rezidențiale și comerciale din București și împrejurimi. Echipa noastră de experți te ghidează pas cu pas în procesul de cumpărare sau vânzare.
+                MVA IMOBILIARE este o agenție imobiliară de top, specializată în tranzacții imobiliare de calitate superioară. Cu o echipă de consultanți experimentați, oferim servicii complete pentru proprietăți rezidențiale și comerciale.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center">
@@ -203,7 +207,7 @@ const CompanyWebsite = () => {
                 <h3 className="text-xl font-semibold mb-2">Email</h3>
                 <p className="text-muted-foreground mb-4">Trimite-ne un mesaj detaliat</p>
                 <Button variant="outline" className="w-full">
-                  contact@realestatepro.ro
+                  contact@mvaimobiliare.ro
                 </Button>
               </CardContent>
             </Card>
@@ -228,8 +232,8 @@ const CompanyWebsite = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Building2 className="h-6 w-6 text-primary" />
-                <span className="text-lg font-bold">RealEstate Pro</span>
+                <img src="/src/assets/mva-logo.png" alt="MVA IMOBILIARE" className="h-8 w-8" />
+                <span className="text-lg font-bold">MVA IMOBILIARE</span>
               </div>
               <p className="text-muted-foreground">
                 Partenerul tău de încredere în domeniul imobiliar.
@@ -257,14 +261,14 @@ const CompanyWebsite = () => {
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li>+40 21 123 4567</li>
-                <li>contact@realestatepro.ro</li>
+                <li>contact@mvaimobiliare.ro</li>
                 <li>Str. Victoriei Nr. 123</li>
                 <li>București, România</li>
               </ul>
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 RealEstate Pro. Toate drepturile rezervate.</p>
+            <p>&copy; 2024 MVA IMOBILIARE. Toate drepturile rezervate.</p>
           </div>
         </div>
       </footer>
