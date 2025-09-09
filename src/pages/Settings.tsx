@@ -243,9 +243,6 @@ export default function Settings() {
               <Button variant="outline" className="w-full justify-start">
                 Schimbă Parola
               </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Activează 2FA
-              </Button>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label className="text-sm">Conectări Automate</Label>
