@@ -14,11 +14,11 @@ const CompanyWebsite = () => {
       <header className="fixed top-0 w-full glass-nav z-50">
         <div className="container mx-auto px-6 py-4">
           <nav className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-12 w-12" />
+            <div className="flex items-center space-x-3">
+              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-10 w-10" />
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-primary tracking-wide">MVA</span>
-                <span className="text-xs text-accent font-medium tracking-[0.2em] uppercase -mt-1">IMOBILIARE</span>
+                <span className="text-xl font-bold text-primary">MVA</span>
+                <span className="text-xs text-accent font-medium tracking-widest -mt-1">IMOBILIARE</span>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -62,13 +62,13 @@ const CompanyWebsite = () => {
             Cu o echipă de experți și tehnologie de ultimă generație, vă oferim 
             cele mai bune soluții pentru investițiile dumneavoastră.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button size="lg" className="bg-accent text-primary hover:bg-accent/90 text-lg px-12 py-6 shadow-luxury font-semibold tracking-wide">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-accent text-white hover:bg-accent/90 text-lg px-8 py-3 shadow-luxury font-medium">
               Descoperă Proprietăți
-              <ArrowRight className="ml-3 h-6 w-6" />
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white/40 hover:bg-white/15 text-lg px-12 py-6 backdrop-blur-sm font-semibold tracking-wide">
-              <Phone className="mr-3 h-6 w-6" />
+            <Button size="lg" variant="outline" className="text-white border-white/60 hover:bg-white/20 text-lg px-8 py-3 backdrop-blur-sm font-medium">
+              <Phone className="mr-2 h-5 w-5" />
               Consultație Gratuită
             </Button>
           </div>
@@ -80,7 +80,7 @@ const CompanyWebsite = () => {
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center group hover:scale-105 transition-transform duration-300">
-              <div className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-3">750+</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary mb-3">750+</div>
               <div className="text-muted-foreground font-medium">Proprietăți Vândute</div>
             </div>
             <div className="text-center group hover:scale-105 transition-transform duration-300">

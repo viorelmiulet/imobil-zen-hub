@@ -6,59 +6,62 @@
 
 @layer base {
   :root {
-    /* Premium luxury color palette - Elegant navy, gold, and champagne */
-    --background: 35 20% 98%;
-    --foreground: 220 25% 8%;
+    /* Premium dark luxury palette - Charcoal, emerald, and platinum */
+    --background: 210 15% 97%;
+    --foreground: 215 25% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 8%;
+    --card-foreground: 215 25% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 8%;
+    --popover-foreground: 215 25% 8%;
 
-    --primary: 220 30% 15%;
-    --primary-foreground: 35 20% 98%;
-    --primary-glow: 45 80% 65%;
+    --primary: 215 25% 12%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 163 45% 55%;
 
-    --secondary: 35 15% 95%;
-    --secondary-foreground: 220 25% 8%;
+    --secondary: 210 10% 94%;
+    --secondary-foreground: 215 25% 8%;
 
-    --muted: 35 10% 96%;
-    --muted-foreground: 220 15% 45%;
+    --muted: 210 8% 95%;
+    --muted-foreground: 215 15% 50%;
 
-    --accent: 45 80% 65%;
-    --accent-foreground: 220 30% 15%;
+    --accent: 163 45% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 10% 88%;
-    --input: 35 10% 88%;
-    --ring: 45 80% 65%;
+    --border: 210 8% 90%;
+    --input: 210 8% 90%;
+    --ring: 163 45% 55%;
 
-    /* Premium real estate colors */
-    --success: 120 50% 45%;
-    --warning: 35 85% 55%;
-    --info: 220 25% 25%;
+    /* Premium colors */
+    --success: 163 45% 55%;
+    --warning: 45 90% 60%;
+    --info: 215 25% 25%;
+    
+    --platinum: 220 10% 85%;
+    --charcoal: 215 25% 12%;
+    --emerald: 163 45% 55%;
 
-    /* Luxury gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 30% 15%), hsl(220 25% 25%));
-    --gradient-accent: linear-gradient(135deg, hsl(45 80% 65%), hsl(35 75% 70%));
-    --gradient-background: linear-gradient(135deg, hsl(35 20% 98%), hsl(45 15% 96%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 30% 15% / 0.9), hsl(220 25% 25% / 0.8));
-    --gradient-luxury: linear-gradient(135deg, hsl(45 80% 65% / 0.1), hsl(35 75% 70% / 0.1));
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.4), hsl(0 0% 100% / 0.1));
-    --gradient-glass-border: linear-gradient(135deg, hsl(45 80% 65% / 0.3), hsl(0 0% 100% / 0.2));
+    /* Sophisticated gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(215 25% 12%), hsl(215 20% 18%));
+    --gradient-accent: linear-gradient(135deg, hsl(163 45% 55%), hsl(163 50% 65%));
+    --gradient-background: linear-gradient(135deg, hsl(210 15% 97%), hsl(220 10% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 25% 12% / 0.95), hsl(215 20% 18% / 0.9));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(0 0% 100% / 0.6));
+    --gradient-glass-border: linear-gradient(135deg, hsl(163 45% 55% / 0.2), hsl(0 0% 100% / 0.3));
 
-    /* Premium shadows and effects */
-    --shadow-elegant: 0 32px 64px -12px hsl(220 30% 15% / 0.35);
-    --shadow-luxury: 0 24px 48px -12px hsl(45 80% 65% / 0.25);
-    --shadow-card: 0 12px 32px hsl(220 30% 15% / 0.1);
-    --shadow-hover: 0 28px 56px hsl(220 30% 15% / 0.2);
-    --shadow-glass: 0 8px 32px hsl(220 30% 15% / 0.06);
+    /* Premium shadows */
+    --shadow-elegant: 0 20px 50px -10px hsl(215 25% 12% / 0.3);
+    --shadow-luxury: 0 15px 35px -8px hsl(163 45% 55% / 0.3);
+    --shadow-card: 0 8px 25px hsl(215 25% 12% / 0.08);
+    --shadow-hover: 0 25px 60px hsl(215 25% 12% / 0.15);
+    --shadow-glass: 0 8px 32px hsl(215 25% 12% / 0.05);
     --backdrop-blur: blur(20px);
 
-    /* Premium animations */
+    /* Smooth transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-luxury: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -170,27 +173,28 @@
   }
   
   .glass-card {
-    background: hsl(0 0% 100% / 0.7);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid hsl(45 80% 65% / 0.2);
+    background: hsl(0 0% 100% / 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(163 45% 55% / 0.15);
     box-shadow: var(--shadow-card);
   }
   
   .glass-nav {
-    background: hsl(0 0% 100% / 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid hsl(45 80% 65% / 0.2);
+    background: hsl(0 0% 100% / 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid hsl(163 45% 55% / 0.1);
     box-shadow: var(--shadow-glass);
   }
   
   .luxury-card {
-    background: hsl(0 0% 100% / 0.9);
+    background: hsl(0 0% 100% / 0.98);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border: 1px solid hsl(45 80% 65% / 0.3);
+    border: 1px solid hsl(163 45% 55% / 0.2);
     box-shadow: var(--shadow-luxury);
+    transition: var(--transition-luxury);
   }
 
   /* Smooth animations */
