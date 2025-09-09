@@ -162,43 +162,46 @@ export default function Settings() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <Label>Temă</Label>
-                <div className="flex items-center space-x-2 p-1 bg-muted rounded-lg">
+              <div className="space-y-4">
+                <Label className="text-sm font-medium">Temă aplicație</Label>
+                <div className="inline-flex items-center p-1 bg-muted rounded-xl border shadow-sm w-fit">
                   <button
                     onClick={() => setTheme("light")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
                       theme === "light" 
-                        ? "bg-background text-foreground shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-background text-foreground shadow-sm border" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
                     <Sun className="h-4 w-4" />
-                    Luminos
+                    <span>Luminos</span>
                   </button>
                   <button
                     onClick={() => setTheme("dark")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
                       theme === "dark" 
-                        ? "bg-background text-foreground shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-background text-foreground shadow-sm border" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
                     <Moon className="h-4 w-4" />
-                    Întunecat
+                    <span>Întunecat</span>
                   </button>
                   <button
                     onClick={() => setTheme("system")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 min-w-[100px] justify-center ${
                       theme === "system" 
-                        ? "bg-background text-foreground shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-background text-foreground shadow-sm border" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
                     <Monitor className="h-4 w-4" />
-                    Sistem
+                    <span>Sistem</span>
                   </button>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Alege aspectul interfaței aplicației
+                </p>
               </div>
               <div className="space-y-2">
                 <Label>Limbă</Label>
