@@ -25,6 +25,25 @@ export function useUserRole(): UserPermissions {
   useEffect(() => {
     async function getUserRole() {
       try {
+        // Mock admin user for testing - remove when real auth is implemented
+        const mockAdminUser = {
+          id: 'admin-user-123',
+          role: 'admin' as UserRole
+        };
+
+        const newPermissions: UserPermissions = {
+          userId: mockAdminUser.id,
+          role: mockAdminUser.role,
+          canDeleteAny: mockAdminUser.role === 'admin',
+          canEditAny: mockAdminUser.role === 'admin',
+          canDeleteOwn: mockAdminUser.role === 'admin' || mockAdminUser.role === 'agent',
+          canEditOwn: mockAdminUser.role === 'admin' || mockAdminUser.role === 'agent',
+        };
+
+        setPermissions(newPermissions);
+
+        /* 
+        // Real implementation when Supabase auth is ready:
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
@@ -55,6 +74,7 @@ export function useUserRole(): UserPermissions {
         };
 
         setPermissions(newPermissions);
+        */
       } catch (error) {
         console.error('Error fetching user role:', error);
         setPermissions({
