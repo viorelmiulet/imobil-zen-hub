@@ -164,27 +164,27 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <Label className="text-sm font-medium">Temă aplicație</Label>
-                <div className="inline-flex items-center p-1 bg-muted rounded-xl border shadow-sm w-fit">
+                <div className="inline-flex items-center p-0.5 bg-muted rounded-lg border shadow-sm w-fit">
                   <button
                     onClick={() => setTheme("light")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-w-[85px] justify-center ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-200 min-w-[70px] justify-center ${
                       theme === "light" 
                         ? "bg-background text-foreground shadow-sm border" 
                         : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
-                    <Sun className="h-3.5 w-3.5" />
+                    <Sun className="h-3 w-3" />
                     <span>Luminos</span>
                   </button>
                   <button
                     onClick={() => setTheme("dark")}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-w-[85px] justify-center ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-200 min-w-[70px] justify-center ${
                       theme === "dark" 
                         ? "bg-background text-foreground shadow-sm border" 
                         : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                     }`}
                   >
-                    <Moon className="h-3.5 w-3.5" />
+                    <Moon className="h-3 w-3" />
                     <span>Întunecat</span>
                   </button>
                 </div>
