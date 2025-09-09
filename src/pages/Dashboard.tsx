@@ -160,7 +160,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Proprietăți Recente</CardTitle>
               <Button variant="outline" size="sm" asChild>
-                <Link to="/properties">Vezi Toate</Link>
+                <Link to="/crm/properties">Vezi Toate</Link>
               </Button>
             </div>
           </CardHeader>
@@ -207,7 +207,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Lead-uri Recente</CardTitle>
               <Button variant="outline" size="sm" asChild>
-                <Link to="/leads">Vezi Toate</Link>
+                <Link to="/crm/leads">Vezi Toate</Link>
               </Button>
             </div>
           </CardHeader>

@@ -16,10 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "Proprietăți", href: "/properties", icon: Building2 },
-  { name: "Lead-uri", href: "/leads", icon: Users },
-  { name: "Setări", href: "/settings", icon: Settings },
+  { name: "Dashboard", href: "/crm", icon: Home },
+  { name: "Proprietăți", href: "/crm/properties", icon: Building2 },
+  { name: "Lead-uri", href: "/crm/leads", icon: Users },
+  { name: "Setări", href: "/crm/settings", icon: Settings },
 ];
 
 export function RealEstateLayout() {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import { RealEstateLayout } from "./components/RealEstateLayout";
+import CompanyWebsite from "./pages/CompanyWebsite";
 import Dashboard from "./pages/Dashboard";
 import Properties from "./pages/Properties";
 import Leads from "./pages/Leads";
@@ -22,12 +23,17 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<RealEstateLayout />}>
+            {/* Company Website */}
+            <Route path="/" element={<CompanyWebsite />} />
+            
+            {/* CRM System */}
+            <Route path="/crm" element={<RealEstateLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="properties" element={<Properties />} />
               <Route path="leads" element={<Leads />} />
               <Route path="settings" element={<Settings />} />
             </Route>
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
