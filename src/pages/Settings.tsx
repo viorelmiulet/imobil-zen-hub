@@ -19,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { UserManagement } from "@/components/settings/UserManagement";
 
 export default function Settings() {
   return (
@@ -36,6 +37,7 @@ export default function Settings() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Settings */}
         <div className="lg:col-span-2 space-y-6">
+          <UserManagement />
           {/* Profile Settings */}
           <Card className="shadow-card animate-slide-up">
             <CardHeader>
