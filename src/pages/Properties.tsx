@@ -17,7 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AddPropertyDialog } from "@/components/AddPropertyDialog";
+import { EditPropertyDialog } from "@/components/EditPropertyDialog";
+import { useToast } from "@/hooks/use-toast";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -110,10 +113,13 @@ const properties = [
 ];
 
 export default function Properties() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [propertiesList, setPropertiesList] = useState(properties);
+  const [editingProperty, setEditingProperty] = useState<any>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const filteredProperties = propertiesList.filter((property) => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -135,8 +141,36 @@ export default function Properties() {
     }
   };
 
+  const handleEditProperty = (property: any) => {
+    setEditingProperty(property);
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdateProperty = (updatedProperty: any) => {
+    setPropertiesList(prev => 
+      prev.map(p => p.id === updatedProperty.id ? updatedProperty : p)
+    );
+  };
+
+  const handleDeleteProperty = (propertyId: number) => {
+    setPropertiesList(prev => prev.filter(p => p.id !== propertyId));
+    toast({
+      title: "Proprietate ștearsă",
+      description: "Proprietatea a fost ștearsă cu succes.",
+    });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
+      {editingProperty && (
+        <EditPropertyDialog
+          property={editingProperty}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onPropertyUpdated={handleUpdateProperty}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -263,12 +297,38 @@ export default function Properties() {
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={() => handleEditProperty(property)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Șterge proprietatea</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Anulează</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteProperty(property.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Șterge
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               </div>

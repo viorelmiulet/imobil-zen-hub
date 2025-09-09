@@ -1,42 +1,47 @@
 import { useState, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-interface AddPropertyDialogProps {
-  onPropertyAdded?: (property: any) => void;
+interface EditPropertyDialogProps {
+  property: any;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onPropertyUpdated?: (property: any) => void;
 }
 
-export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
-  const [open, setOpen] = useState(false);
+export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpdated }: EditPropertyDialogProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>(property.images || [property.image]);
   const [formData, setFormData] = useState({
-    title: "",
-    price: "",
-    location: "",
-    type: "",
-    status: "",
-    bedrooms: "",
-    bathrooms: "",
-    area: "",
-    description: "",
+    title: property.title || "",
+    price: property.price || "",
+    location: property.location || "",
+    type: property.type || "",
+    status: property.status || "",
+    bedrooms: property.bedrooms?.toString() || "",
+    bathrooms: property.bathrooms?.toString() || "",
+    area: property.area || "",
+    description: property.description || "",
   });
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length + selectedImages.length > 5) {
+    const totalImages = existingImages.length + selectedImages.length + files.length;
+    
+    if (totalImages > 5) {
       toast({
         title: "Prea multe imagini",
-        description: "Poți adăuga maximum 5 imagini per proprietate.",
+        description: "Poți avea maximum 5 imagini per proprietate.",
         variant: "destructive",
       });
       return;
@@ -44,8 +49,39 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
     setSelectedImages(prev => [...prev, ...files]);
   };
 
-  const removeImage = (index: number) => {
+  const removeNewImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = async (imageUrl: string, index: number) => {
+    try {
+      // Extract filename from URL
+      const urlParts = imageUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      
+      // Delete from storage
+      const { error } = await supabase.storage
+        .from('property-images')
+        .remove([fileName]);
+
+      if (error) {
+        console.error('Error deleting image:', error);
+      }
+
+      setExistingImages(prev => prev.filter((_, i) => i !== index));
+      
+      toast({
+        title: "Imagine ștearsă",
+        description: "Imaginea a fost ștearsă cu succes.",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Eroare",
+        description: "Nu s-a putut șterge imaginea.",
+        variant: "destructive",
+      });
+    }
   };
 
   const uploadImages = async (): Promise<string[]> => {
@@ -91,44 +127,32 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
     setLoading(true);
 
     try {
-      const imageUrls = await uploadImages();
+      const newImageUrls = await uploadImages();
+      const allImages = [...existingImages, ...newImageUrls];
 
-      const newProperty = {
-        id: Date.now(),
+      const updatedProperty = {
+        ...property,
         ...formData,
         bedrooms: parseInt(formData.bedrooms) || 0,
         bathrooms: parseInt(formData.bathrooms) || 0,
-        images: imageUrls,
-        image: imageUrls[0] || "/placeholder.svg",
-        views: 0,
+        images: allImages,
+        image: allImages[0] || "/placeholder.svg",
       };
 
-      onPropertyAdded?.(newProperty);
+      onPropertyUpdated?.(updatedProperty);
 
       toast({
         title: "Succes",
-        description: "Proprietatea a fost adăugată cu succes!",
+        description: "Proprietatea a fost actualizată cu succes!",
       });
 
-      // Reset form
-      setFormData({
-        title: "",
-        price: "",
-        location: "",
-        type: "",
-        status: "",
-        bedrooms: "",
-        bathrooms: "",
-        area: "",
-        description: "",
-      });
       setSelectedImages([]);
-      setOpen(false);
+      onOpenChange(false);
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Eroare",
-        description: "A apărut o eroare la adăugarea proprietății.",
+        description: "A apărut o eroare la actualizarea proprietății.",
         variant: "destructive",
       });
     } finally {
@@ -141,32 +165,55 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-gradient-primary hover:opacity-90 shadow-elegant">
-          <Plus className="h-4 w-4 mr-2" />
-          Adaugă Proprietate
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adaugă Proprietate Nouă</DialogTitle>
+          <DialogTitle>Editează Proprietatea</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Image Upload Section */}
+          {/* Image Management Section */}
           <div className="space-y-4">
             <Label>Imagini Proprietate</Label>
+            
+            {/* Existing Images */}
+            {existingImages.length > 0 && (
+              <div>
+                <div className="text-sm text-muted-foreground mb-2">Imagini existente:</div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+                  {existingImages.map((imageUrl, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={imageUrl}
+                        alt={`Existing ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeExistingImage(imageUrl, index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Add New Images */}
             <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
               <div className="text-center">
                 <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <div className="text-sm text-muted-foreground mb-4">
-                  Adaugă până la 5 imagini (JPG, PNG, WebP)
+                  Adaugă imagini noi (maximum {5 - existingImages.length} imagini)
                 </div>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={loading}
+                  disabled={loading || existingImages.length >= 5}
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Selectează Imagini
@@ -182,31 +229,35 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
               </div>
             </div>
 
-            {/* Selected Images Preview */}
+            {/* New Images Preview */}
             {selectedImages.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {selectedImages.map((file, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ))}
+              <div>
+                <div className="text-sm text-muted-foreground mb-2">Imagini noi:</div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {selectedImages.map((file, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`New ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeNewImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
+          {/* Form fields - same as AddPropertyDialog */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="title">Titlu *</Label>
@@ -326,11 +377,11 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
               Anulează
             </Button>
             <Button type="submit" className="bg-gradient-primary hover:opacity-90" disabled={loading}>
-              {loading ? "Se adaugă..." : "Adaugă Proprietate"}
+              {loading ? "Se salvează..." : "Salvează Modificările"}
             </Button>
           </div>
         </form>
