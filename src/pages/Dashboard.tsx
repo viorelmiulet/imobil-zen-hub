@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -158,8 +159,8 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Proprietăți Recente</CardTitle>
-              <Button variant="outline" size="sm">
-                Vezi Toate
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/properties">Vezi Toate</Link>
               </Button>
             </div>
           </CardHeader>
@@ -205,8 +206,8 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Lead-uri Recente</CardTitle>
-              <Button variant="outline" size="sm">
-                Vezi Toate
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/leads">Vezi Toate</Link>
               </Button>
             </div>
           </CardHeader>
