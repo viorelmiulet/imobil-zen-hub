@@ -164,34 +164,40 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <Label>Temă</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button
-                    variant={theme === "light" ? "default" : "outline"}
-                    size="sm"
+                <div className="flex items-center space-x-2 p-1 bg-muted rounded-lg">
+                  <button
                     onClick={() => setTheme("light")}
-                    className="flex items-center gap-2"
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                      theme === "light" 
+                        ? "bg-background text-foreground shadow-sm" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
                   >
                     <Sun className="h-4 w-4" />
                     Luminos
-                  </Button>
-                  <Button
-                    variant={theme === "dark" ? "default" : "outline"}
-                    size="sm"
+                  </button>
+                  <button
                     onClick={() => setTheme("dark")}
-                    className="flex items-center gap-2"
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                      theme === "dark" 
+                        ? "bg-background text-foreground shadow-sm" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
                   >
                     <Moon className="h-4 w-4" />
                     Întunecat
-                  </Button>
-                  <Button
-                    variant={theme === "system" ? "default" : "outline"}
-                    size="sm"
+                  </button>
+                  <button
                     onClick={() => setTheme("system")}
-                    className="flex items-center gap-2"
+                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                      theme === "system" 
+                        ? "bg-background text-foreground shadow-sm" 
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
                   >
                     <Monitor className="h-4 w-4" />
                     Sistem
-                  </Button>
+                  </button>
                 </div>
               </div>
               <div className="space-y-2">
