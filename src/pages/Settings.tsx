@@ -9,7 +9,10 @@ import {
   Mail,
   Phone,
   MapPin,
-  Save
+  Save,
+  Monitor,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,8 +23,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { UserManagement } from "@/components/settings/UserManagement";
+import { useTheme } from "@/components/theme-provider";
 
 export default function Settings() {
+  const { theme, setTheme } = useTheme();
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
@@ -157,18 +162,37 @@ export default function Settings() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label>Temă</Label>
-                <Select defaultValue="system">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Luminos</SelectItem>
-                    <SelectItem value="dark">Întunecat</SelectItem>
-                    <SelectItem value="system">Sistem</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant={theme === "light" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTheme("light")}
+                    className="flex items-center gap-2"
+                  >
+                    <Sun className="h-4 w-4" />
+                    Luminos
+                  </Button>
+                  <Button
+                    variant={theme === "dark" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTheme("dark")}
+                    className="flex items-center gap-2"
+                  >
+                    <Moon className="h-4 w-4" />
+                    Întunecat
+                  </Button>
+                  <Button
+                    variant={theme === "system" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTheme("system")}
+                    className="flex items-center gap-2"
+                  >
+                    <Monitor className="h-4 w-4" />
+                    Sistem
+                  </Button>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Limbă</Label>
