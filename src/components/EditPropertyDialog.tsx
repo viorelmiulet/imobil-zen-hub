@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PlatformSelector from "@/components/settings/PlatformSelector";
 
 interface EditPropertyDialogProps {
   property: any;
@@ -34,6 +35,38 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
     description: property.description || "",
   });
 
+  // Platform publishing settings - initialize with property's current settings
+  const [platforms, setPlatforms] = useState([
+    {
+      id: 'storia',
+      name: 'Storia.ro',
+      description: 'Cea mai mare platformă imobiliară din România',
+      isConfigured: false,
+      enabled: property.publishPlatforms?.includes('storia') || false
+    },
+    {
+      id: 'imobiliare',
+      name: 'Imobiliare.ro',
+      description: 'Portal imobiliar cu tradiție în România',
+      isConfigured: true,
+      enabled: property.publishPlatforms?.includes('imobiliare') || true
+    },
+    {
+      id: 'publi24',
+      name: 'Publi24',
+      description: 'Platformă de anunturi cu secțiune imobiliară',
+      isConfigured: false,
+      enabled: property.publishPlatforms?.includes('publi24') || false
+    },
+    {
+      id: 'homezz',
+      name: 'HomeZZ',
+      description: 'Platformă modernă pentru proprietăți premium',
+      isConfigured: false,
+      enabled: property.publishPlatforms?.includes('homezz') || false
+    }
+  ]);
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const totalImages = existingImages.length + selectedImages.length + files.length;
@@ -51,6 +84,16 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
 
   const removeNewImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handlePlatformToggle = (platformId: string, enabled: boolean) => {
+    setPlatforms(prev => 
+      prev.map(platform => 
+        platform.id === platformId 
+          ? { ...platform, enabled: enabled && platform.isConfigured }
+          : platform
+      )
+    );
   };
 
   const removeExistingImage = async (imageUrl: string, index: number) => {
@@ -137,13 +180,14 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
         bathrooms: parseInt(formData.bathrooms) || 0,
         images: allImages,
         image: allImages[0] || "/placeholder.svg",
+        publishPlatforms: platforms.filter(p => p.enabled).map(p => p.id),
       };
 
       onPropertyUpdated?.(updatedProperty);
 
       toast({
         title: "Succes",
-        description: "Proprietatea a fost actualizată cu succes!",
+        description: `Proprietatea a fost actualizată și va fi publicată pe ${platforms.filter(p => p.enabled).length} platforme.`,
       });
 
       setSelectedImages([]);
@@ -375,6 +419,13 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
               disabled={loading}
             />
           </div>
+
+          {/* Platform Selector */}
+          <PlatformSelector
+            platforms={platforms}
+            onPlatformToggle={handlePlatformToggle}
+            disabled={loading}
+          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Upload, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PlatformSelector from "@/components/settings/PlatformSelector";
 
 interface AddPropertyDialogProps {
   onPropertyAdded?: (property: any) => void;
@@ -31,6 +32,38 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
     description: "",
   });
 
+  // Platform publishing settings
+  const [platforms, setPlatforms] = useState([
+    {
+      id: 'storia',
+      name: 'Storia.ro',
+      description: 'Cea mai mare platformă imobiliară din România',
+      isConfigured: false, // This would come from API key settings
+      enabled: false
+    },
+    {
+      id: 'imobiliare',
+      name: 'Imobiliare.ro',
+      description: 'Portal imobiliar cu tradiție în România',
+      isConfigured: true, // Mock - configured
+      enabled: true
+    },
+    {
+      id: 'publi24',
+      name: 'Publi24',
+      description: 'Platformă de anunturi cu secțiune imobiliară',
+      isConfigured: false,
+      enabled: false
+    },
+    {
+      id: 'homezz',
+      name: 'HomeZZ',
+      description: 'Platformă modernă pentru proprietăți premium',
+      isConfigured: false,
+      enabled: false
+    }
+  ]);
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + selectedImages.length > 5) {
@@ -46,6 +79,16 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
 
   const removeImage = (index: number) => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handlePlatformToggle = (platformId: string, enabled: boolean) => {
+    setPlatforms(prev => 
+      prev.map(platform => 
+        platform.id === platformId 
+          ? { ...platform, enabled: enabled && platform.isConfigured }
+          : platform
+      )
+    );
   };
 
   const uploadImages = async (): Promise<string[]> => {
@@ -101,13 +144,14 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
         images: imageUrls,
         image: imageUrls[0] || "/placeholder.svg",
         views: 0,
+        publishPlatforms: platforms.filter(p => p.enabled).map(p => p.id),
       };
 
       onPropertyAdded?.(newProperty);
 
       toast({
         title: "Succes",
-        description: "Proprietatea a fost adăugată cu succes!",
+        description: `Proprietatea a fost adăugată și va fi publicată pe ${platforms.filter(p => p.enabled).length} platforme.`,
       });
 
       // Reset form
@@ -123,6 +167,7 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
         description: "",
       });
       setSelectedImages([]);
+      setPlatforms(prev => prev.map(p => ({ ...p, enabled: false })));
       setOpen(false);
     } catch (error) {
       console.error('Error:', error);
@@ -324,6 +369,13 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
               disabled={loading}
             />
           </div>
+
+          {/* Platform Selector */}
+          <PlatformSelector
+            platforms={platforms}
+            onPlatformToggle={handlePlatformToggle}
+            disabled={loading}
+          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
