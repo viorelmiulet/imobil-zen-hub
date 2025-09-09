@@ -206,4 +206,60 @@
   * {
     transition: var(--transition-smooth);
   }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Touch-friendly tap targets */
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Prevent zoom on input focus */
+    input, select, textarea {
+      font-size: 16px;
+    }
+    
+    /* Mobile-friendly table scrolling */
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Mobile card spacing */
+    .mobile-card {
+      margin-bottom: 0.5rem;
+      padding: 1rem;
+    }
+    
+    /* Hide elements on mobile */
+    .hidden-mobile {
+      display: none;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .sidebar-mini {
+      width: 4rem;
+    }
+  }
+  
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    /* Remove hover effects on touch devices */
+    .hover-effect:hover {
+      transform: none;
+    }
+    
+    /* Larger touch targets */
+    .touch-target {
+      padding: 0.75rem;
+    }
+  }
 }

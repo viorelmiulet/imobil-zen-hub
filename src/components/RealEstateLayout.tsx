@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { 
   Home, 
@@ -8,7 +8,8 @@ import {
   Menu,
   Bell,
   Search,
-  User
+  User,
+  X
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -23,19 +24,48 @@ const navigation = [
 ];
 
 export function RealEstateLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setSidebarOpen(true);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-background">
+      {/* Mobile sidebar overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 transition-opacity" 
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 bg-card shadow-elegant transition-all duration-300",
-        sidebarOpen ? "w-64" : "w-16"
+        isMobile 
+          ? sidebarOpen 
+            ? "w-64" 
+            : "-translate-x-full w-64"
+          : sidebarOpen 
+            ? "w-64" 
+            : "w-16"
       )}>
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center justify-between px-6 border-b border-border">
-            {sidebarOpen && (
+            {(sidebarOpen || !isMobile) && (
               <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 RealEstate Pro
               </h1>
@@ -46,7 +76,7 @@ export function RealEstateLayout() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="ml-auto"
             >
-              <Menu className="h-4 w-4" />
+              {isMobile && sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>
           </div>
 
@@ -69,9 +99,9 @@ export function RealEstateLayout() {
               >
                 <item.icon className={cn(
                   "h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110",
-                  sidebarOpen ? "mr-3" : "mx-auto"
+                  (sidebarOpen || isMobile) ? "mr-3" : "mx-auto"
                 )} />
-                {sidebarOpen && <span>{item.name}</span>}
+                {(sidebarOpen || isMobile) && <span>{item.name}</span>}
               </NavLink>
             ))}
           </nav>
@@ -81,17 +111,31 @@ export function RealEstateLayout() {
       {/* Main content */}
       <div className={cn(
         "transition-all duration-300",
-        sidebarOpen ? "ml-64" : "ml-16"
+        isMobile 
+          ? "ml-0" 
+          : sidebarOpen 
+            ? "ml-64" 
+            : "ml-16"
       )}>
         {/* Header */}
         <header className="bg-card/80 backdrop-blur-sm border-b border-border shadow-card">
-          <div className="flex h-16 items-center justify-between px-6">
+          <div className="flex h-16 items-center justify-between px-4 md:px-6">
             <div className="flex items-center space-x-4">
-              <div className="relative">
+              {isMobile && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarOpen(true)}
+                  className="md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              )}
+              <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Caută proprietăți, clienți..."
-                  className="w-64 pl-10 bg-background/50 border-border focus:border-primary"
+                  className="w-48 sm:w-64 pl-10 bg-background/50 border-border focus:border-primary"
                 />
               </div>
             </div>
@@ -109,7 +153,7 @@ export function RealEstateLayout() {
         </header>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-4 md:p-6">
           <Outlet />
         </main>
       </div>
