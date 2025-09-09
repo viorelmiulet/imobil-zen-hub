@@ -21,6 +21,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 import { EditPropertyDialog } from "@/components/EditPropertyDialog";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -39,6 +40,7 @@ const properties = [
     area: "85 mp",
     description: "Apartament modern cu finisaje premium, parcare inclusă.",
     views: 24,
+    agentId: "user1", // Mock agent ID
   },
   {
     id: 2,
@@ -53,6 +55,7 @@ const properties = [
     area: "150 mp",
     description: "Casă cu design contemporan, grădină și garaj pentru 2 mașini.",
     views: 47,
+    agentId: "user2",
   },
   {
     id: 3,
@@ -67,6 +70,7 @@ const properties = [
     area: "120 mp",
     description: "Penthouse de lux cu terasă generoasă și vedere panoramică.",
     views: 89,
+    agentId: "user1",
   },
   {
     id: 4,
@@ -81,6 +85,7 @@ const properties = [
     area: "35 mp",
     description: "Studio complet mobilat în zonă centrală, ideal pentru investiție.",
     views: 12,
+    agentId: "user2",
   },
   {
     id: 5,
@@ -95,6 +100,7 @@ const properties = [
     area: "300 mp",
     description: "Vilă de lux cu piscină, aproape de Parcul Herăstrău.",
     views: 156,
+    agentId: "user1",
   },
   {
     id: 6,
@@ -109,11 +115,13 @@ const properties = [
     area: "70 mp",
     description: "Apartament elegant cu balcon generos, zone verzi în apropiere.",
     views: 33,
+    agentId: "user2",
   },
 ];
 
 export default function Properties() {
   const { toast } = useToast();
+  const permissions = useUserRole();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -150,6 +158,14 @@ export default function Properties() {
     setPropertiesList(prev => 
       prev.map(p => p.id === updatedProperty.id ? updatedProperty : p)
     );
+  };
+
+  const canEditProperty = (property: any) => {
+    return permissions.canEditAny || (permissions.canEditOwn && property.agentId === permissions.userId);
+  };
+
+  const canDeleteProperty = (property: any) => {
+    return permissions.canDeleteAny || (permissions.canDeleteOwn && property.agentId === permissions.userId);
   };
 
   const handleDeleteProperty = (propertyId: number) => {
@@ -302,46 +318,50 @@ export default function Properties() {
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
-                      onClick={() => handleEditProperty(property)}
-                      title="Editează proprietatea"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          title="Șterge proprietatea"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-card border border-border shadow-hover">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-foreground">Șterge proprietatea</AlertDialogTitle>
-                          <AlertDialogDescription className="text-muted-foreground">
-                            Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
-                            Anulează
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteProperty(property.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
+                    {canEditProperty(property) && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
+                        onClick={() => handleEditProperty(property)}
+                        title="Editează proprietatea"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canDeleteProperty(property) && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            title="Șterge proprietatea"
                           >
-                            Șterge
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-card border border-border shadow-hover">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-foreground">Șterge proprietatea</AlertDialogTitle>
+                            <AlertDialogDescription className="text-muted-foreground">
+                              Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
+                              Anulează
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteProperty(property.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
+                            >
+                              Șterge
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
                 </div>
               </div>

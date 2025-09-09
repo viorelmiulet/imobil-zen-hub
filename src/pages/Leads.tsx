@@ -10,7 +10,9 @@ import {
   Calendar,
   Star,
   MessageSquare,
-  MoreHorizontal
+  MoreHorizontal,
+  Edit,
+  Trash2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +20,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useToast } from "@/hooks/use-toast";
 
 const leads = [
   {
@@ -35,6 +40,7 @@ const leads = [
     lastContact: "Azi, 14:30",
     notes: "Interesată de zone centrale, preferă apartamente noi.",
     rating: 5,
+    agentId: "user1", // Mock agent ID
   },
   {
     id: 2,
@@ -50,6 +56,7 @@ const leads = [
     lastContact: "Ieri, 16:45",
     notes: "Familie cu 2 copii, caută casă în zonă liniștită.",
     rating: 4,
+    agentId: "user2",
   },
   {
     id: 3,
@@ -65,6 +72,7 @@ const leads = [
     lastContact: "2 zile în urmă",
     notes: "Investitor, caută proprietăți pentru închiriere.",
     rating: 3,
+    agentId: "user1",
   },
   {
     id: 4,
@@ -80,6 +88,7 @@ const leads = [
     lastContact: "Azi, 09:15",
     notes: "Tânăr profesionist, primul apartament.",
     rating: 4,
+    agentId: "user2",
   },
   {
     id: 5,
@@ -95,6 +104,7 @@ const leads = [
     lastContact: "Azi, 11:20",
     notes: "CEO, caută proprietăți premium cu vedere.",
     rating: 5,
+    agentId: "user1",
   },
   {
     id: 6,
@@ -110,6 +120,7 @@ const leads = [
     lastContact: "Acum 3 ore",
     notes: "Familie tânără, caută primul apartament.",
     rating: 4,
+    agentId: "user2",
   },
 ];
 
@@ -121,6 +132,8 @@ const statusStats = [
 ];
 
 export default function Leads() {
+  const { toast } = useToast();
+  const permissions = useUserRole();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -162,6 +175,22 @@ export default function Leads() {
         className={`h-3 w-3 ${i < rating ? "fill-warning text-warning" : "text-muted-foreground"}`}
       />
     ));
+  };
+
+  const canEditLead = (lead: any) => {
+    return permissions.canEditAny || (permissions.canEditOwn && lead.agentId === permissions.userId);
+  };
+
+  const canDeleteLead = (lead: any) => {
+    return permissions.canDeleteAny || (permissions.canDeleteOwn && lead.agentId === permissions.userId);
+  };
+
+  const handleDeleteLead = (leadId: number) => {
+    setLeadsList(prev => prev.filter(l => l.id !== leadId));
+    toast({
+      title: "Lead șters",
+      description: "Lead-ul a fost șters cu succes.",
+    });
   };
 
   return (
@@ -260,21 +289,59 @@ export default function Leads() {
                   <Badge className={getStatusColor(lead.status)}>
                     {lead.status}
                   </Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
+                  <div className="flex items-center space-x-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      title="Vezi detalii"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                    {canEditLead(lead) && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
+                        title="Editează lead-ul"
+                      >
+                        <Edit className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Vezi detalii</DropdownMenuItem>
-                      <DropdownMenuItem>Editează</DropdownMenuItem>
-                      <DropdownMenuItem>Marchează ca contactat</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        Șterge
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    )}
+                    {canDeleteLead(lead) && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            title="Șterge lead-ul"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-card border border-border shadow-hover">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-foreground">Șterge lead-ul</AlertDialogTitle>
+                            <AlertDialogDescription className="text-muted-foreground">
+                              Ești sigur că vrei să ștergi acest lead? Această acțiune nu poate fi anulată.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
+                              Anulează
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteLead(lead.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
+                            >
+                              Șterge
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardHeader>
