@@ -15,9 +15,9 @@ const CompanyWebsite = () => {
         <div className="container mx-auto px-6 py-4">
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-10 w-10" />
+              <img src={mvaLogo} alt="MVA IMOBILIARE" className="h-8 w-8" />
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-primary">MVA</span>
+                <span className="text-lg font-bold neon-text">MVA</span>
                 <span className="text-xs text-accent font-medium tracking-widest -mt-1">IMOBILIARE</span>
               </div>
             </div>
@@ -45,15 +45,14 @@ const CompanyWebsite = () => {
         <div className="absolute inset-0 bg-gradient-hero" />
         
         <div className="relative z-10 container mx-auto px-6 text-center text-white">
-          <Badge className="mb-8 luxury-card text-primary border-accent/30 px-6 py-2">
-            <span className="text-accent mr-2">◆</span>
+          <Badge className="mb-8 luxury-card text-primary border-primary/30 px-6 py-2">
+            <span className="neon-text mr-2">◆</span>
             Agenția #1 în Satisfacția Clienților
           </Badge>
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
-            <span className="text-white">MVA</span>
-            <span className="text-accent"> IMOBILIARE</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+            <span className="neon-text">MVA IMOBILIARE</span>
             <br />
-            <span className="text-2xl md:text-4xl font-light text-white/90 tracking-wide">
+            <span className="text-2xl md:text-4xl font-light text-accent neon-accent">
               Excelența în servicii imobiliare premium
             </span>
           </h1>
@@ -80,7 +79,7 @@ const CompanyWebsite = () => {
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center group hover:scale-105 transition-transform duration-300">
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-3">750+</div>
+              <div className="text-4xl md:text-5xl font-bold neon-text mb-3">750+</div>
               <div className="text-muted-foreground font-medium">Proprietăți Vândute</div>
             </div>
             <div className="text-center group hover:scale-105 transition-transform duration-300">
