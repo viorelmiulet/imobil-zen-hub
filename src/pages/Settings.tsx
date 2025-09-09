@@ -17,6 +17,7 @@ import {
   Key,
   Globe
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserManagement } from "@/components/settings/UserManagement";
 import ApiKeySetting from "@/components/settings/ApiKeySetting";
+import AddApiKeyDialog from "@/components/settings/AddApiKeyDialog";
 import { useTheme } from "@/components/theme-provider";
 import { useToast } from "@/hooks/use-toast";
 
@@ -35,27 +37,54 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
-  // Mock data for API key status
-  const apiKeyStatuses = {
+  // API keys stocate local pentru prototip (localStorage)
+  const getApiKey = (platformId: string) => localStorage.getItem(`api_key_${platformId}`) || "";
+
+  const [apiKeyStatuses, setApiKeyStatuses] = useState({
     storia: false,
-    imobiliare: true,
+    imobiliare: false,
     publi24: false,
-    homezz: false
+    homezz: false,
+  });
+
+  const refreshApiKeyStatuses = () =>
+    setApiKeyStatuses({
+      storia: !!getApiKey("storia"),
+      imobiliare: !!getApiKey("imobiliare"),
+      publi24: !!getApiKey("publi24"),
+      homezz: !!getApiKey("homezz"),
+    });
+
+  useEffect(() => {
+    refreshApiKeyStatuses();
+  }, []);
+
+  const saveApiKey = (id: string, value: string) => {
+    if (!id) return;
+    if (value) {
+      localStorage.setItem(`api_key_${id}`, value);
+      toast({ title: "API key salvat", description: `Cheia pentru ${id} a fost salvată local.` });
+    } else {
+      localStorage.removeItem(`api_key_${id}`);
+      toast({ title: "API key eliminat", description: `Cheia pentru ${id} a fost ștearsă.` });
+    }
+    refreshApiKeyStatuses();
   };
 
-  const handleAddApiKey = (platform: string) => {
-    // This will be implemented with Supabase secrets
-    toast({
-      title: "Funcționalitate în dezvoltare",
-      description: `Adăugarea API key pentru ${platform} va fi disponibilă în curând.`,
-    });
+  const [keyDialogOpen, setKeyDialogOpen] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<{ id: string; name: string }>({ id: "", name: "" });
+
+  const handleAddApiKey = (platform: { id: string; name: string }) => {
+    setSelectedPlatform(platform);
+    setKeyDialogOpen(true);
   };
 
   const handleTestConnection = async (platform: string) => {
-    // Mock test connection
-    return new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-    });
+    // Test simplu: verifică dacă există o cheie salvată pentru platformă
+    const key = getApiKey(platform);
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    if (key) return true;
+    throw new Error("No key");
   };
 
   return (
@@ -254,7 +283,7 @@ export default function Settings() {
               description="Cea mai mare platformă imobiliară din România"
               website="https://storia.ro"
               isConfigured={apiKeyStatuses.storia}
-              onAddKey={() => handleAddApiKey("Storia")}
+              onAddKey={() => handleAddApiKey({ id: "storia", name: "Storia.ro" })}
               onTestConnection={() => handleTestConnection("storia")}
             />
 
@@ -264,7 +293,7 @@ export default function Settings() {
               description="Portal imobiliar cu tradiție în România"
               website="https://imobiliare.ro"
               isConfigured={apiKeyStatuses.imobiliare}
-              onAddKey={() => handleAddApiKey("Imobiliare.ro")}
+              onAddKey={() => handleAddApiKey({ id: "imobiliare", name: "Imobiliare.ro" })}
               onTestConnection={() => handleTestConnection("imobiliare")}
             />
 
@@ -274,7 +303,7 @@ export default function Settings() {
               description="Platformă de anunturi cu secțiune imobiliară"
               website="https://publi24.ro"
               isConfigured={apiKeyStatuses.publi24}
-              onAddKey={() => handleAddApiKey("Publi24")}
+              onAddKey={() => handleAddApiKey({ id: "publi24", name: "Publi24" })}
               onTestConnection={() => handleTestConnection("publi24")}
             />
 
@@ -284,7 +313,7 @@ export default function Settings() {
               description="Platformă modernă pentru proprietăți premium"
               website="https://homezz.ro"
               isConfigured={apiKeyStatuses.homezz}
-              onAddKey={() => handleAddApiKey("HomeZZ")}
+              onAddKey={() => handleAddApiKey({ id: "homezz", name: "HomeZZ" })}
               onTestConnection={() => handleTestConnection("homezz")}
             />
           </div>
@@ -423,6 +452,18 @@ export default function Settings() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <AddApiKeyDialog
+        open={keyDialogOpen}
+        onOpenChange={setKeyDialogOpen}
+        platformName={selectedPlatform.name}
+        platformId={selectedPlatform.id}
+        initialValue={getApiKey(selectedPlatform.id)}
+        onSave={(value) => {
+          saveApiKey(selectedPlatform.id, value);
+          setKeyDialogOpen(false);
+        }}
+      />
 
       {/* Save Button */}
       <div className="flex justify-end">
