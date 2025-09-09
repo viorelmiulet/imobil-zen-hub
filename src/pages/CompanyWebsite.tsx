@@ -11,7 +11,7 @@ const CompanyWebsite = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 w-full bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 z-50 border-b border-border/20">
+      <header className="fixed top-0 w-full glass-nav z-50">
         <div className="container mx-auto px-6 py-4">
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -45,7 +45,7 @@ const CompanyWebsite = () => {
         <div className="absolute inset-0 bg-gradient-hero" />
         
         <div className="relative z-10 container mx-auto px-6 text-center text-white">
-          <Badge className="mb-8 bg-white/10 text-white border-white/20 backdrop-blur-sm">
+          <Badge className="mb-8 glass text-white border-white/30">
             ⭐ Agenția #1 în Satisfacția Clienților
           </Badge>
           <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
@@ -115,7 +115,7 @@ const CompanyWebsite = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-10">
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 group border-border/20 hover:border-primary/20">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 group border-white/20 hover:border-primary/30">
               <CardHeader className="pb-6">
                 <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Building2 className="h-8 w-8 text-white" />
@@ -130,7 +130,7 @@ const CompanyWebsite = () => {
               </CardContent>
             </Card>
             
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 group border-border/20 hover:border-primary/20">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 group border-white/20 hover:border-primary/30">
               <CardHeader className="pb-6">
                 <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Users className="h-8 w-8 text-white" />
@@ -145,7 +145,7 @@ const CompanyWebsite = () => {
               </CardContent>
             </Card>
             
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 group border-border/20 hover:border-primary/20">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 group border-white/20 hover:border-primary/30">
               <CardHeader className="pb-6">
                 <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <TrendingUp className="h-8 w-8 text-white" />
@@ -181,17 +181,17 @@ const CompanyWebsite = () => {
               </p>
               
               <div className="grid md:grid-cols-3 gap-6 mb-8">
-                <div className="text-center p-4 bg-background rounded-xl shadow-card">
+                <div className="text-center p-4 glass-card rounded-xl">
                   <Award className="h-8 w-8 text-primary mx-auto mb-2" />
                   <div className="text-sm font-medium">Certificări</div>
                   <div className="text-xs text-muted-foreground">Internaționale</div>
                 </div>
-                <div className="text-center p-4 bg-background rounded-xl shadow-card">
+                <div className="text-center p-4 glass-card rounded-xl">
                   <Shield className="h-8 w-8 text-accent mx-auto mb-2" />
                   <div className="text-sm font-medium">Transparență</div>
                   <div className="text-xs text-muted-foreground">100% Garantată</div>
                 </div>
-                <div className="text-center p-4 bg-background rounded-xl shadow-card">
+                <div className="text-center p-4 glass-card rounded-xl">
                   <Clock className="h-8 w-8 text-primary mx-auto mb-2" />
                   <div className="text-sm font-medium">Disponibilitate</div>
                   <div className="text-xs text-muted-foreground">24/7 Support</div>
@@ -230,7 +230,7 @@ const CompanyWebsite = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-10">
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 text-center group">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 text-center group border-white/20">
               <CardContent className="p-10">
                 <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Phone className="h-8 w-8 text-white" />
@@ -245,7 +245,7 @@ const CompanyWebsite = () => {
               </CardContent>
             </Card>
             
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 text-center group">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 text-center group border-white/20">
               <CardContent className="p-10">
                 <div className="w-16 h-16 bg-gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Mail className="h-8 w-8 text-white" />
@@ -260,7 +260,7 @@ const CompanyWebsite = () => {
               </CardContent>
             </Card>
             
-            <Card className="shadow-card hover:shadow-elegant transition-all duration-500 text-center group">
+            <Card className="glass-card hover:shadow-elegant transition-all duration-500 text-center group border-white/20">
               <CardContent className="p-10">
                 <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <MapPin className="h-8 w-8 text-white" />
