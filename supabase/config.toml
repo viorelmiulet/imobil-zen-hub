@@ -1,1 +1,4 @@
 project_id = "sfxukwbckslyscjtirae"
+
+[functions.publish-offer-mva]
+verify_jwt = false
