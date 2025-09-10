@@ -64,23 +64,22 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
     }
   ]);
   
-  // Map property to MVA offer payload
-  const mapPropertyToOffer = (p: any) => ({
-    title: p.title,
-    price: p.price,
-    currency: "EUR",
-    location: p.location,
-    type: p.type,
-    status: p.status || "Activ",
-    area: p.area,
-    bedrooms: p.bedrooms,
-    bathrooms: p.bathrooms,
-    description: p.description,
-    images: p.images || (p.image ? [p.image] : []),
-    source: "crm",
-    published_at: new Date().toISOString(),
-    external_id: String(p.id),
-  });
+  // Map property to MVA required payload
+  const mapPropertyToOffer = (p: any) => {
+    const numericPrice = typeof p.price === 'number'
+      ? p.price
+      : parseInt(String(p.price || '').replace(/[^0-9]/g, ''), 10) || 0;
+    const rooms = typeof p.bedrooms === 'number' ? p.bedrooms : parseInt(String(p.bedrooms || 0), 10) || 0;
+
+    const offer = {
+      title: p.title,
+      description: p.description || '',
+      location: p.location,
+      price_min: numericPrice,
+      rooms,
+    };
+    return offer;
+  };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -170,7 +169,7 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
       // Publish to mvaimobiliare.ro via Edge Function (does not expose secret to frontend)
       try {
         await supabase.functions.invoke('publish-offer-mva', {
-          body: { offer: mapPropertyToOffer(newProperty) }
+          body: { action: 'create', offer: mapPropertyToOffer(newProperty) }
         });
       } catch (err) {
         console.error('Publish to MVA failed:', err);
