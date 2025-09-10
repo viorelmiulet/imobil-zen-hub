@@ -43,6 +43,7 @@ export default function Settings() {
   const [apiKeyStatuses, setApiKeyStatuses] = useState({
     storia: false,
     imobiliare: false,
+    'mva-imobiliare': false,
     publi24: false,
     homezz: false,
   });
@@ -51,6 +52,7 @@ export default function Settings() {
     setApiKeyStatuses({
       storia: !!getApiKey("storia"),
       imobiliare: !!getApiKey("imobiliare"),
+      'mva-imobiliare': true, // Always configured since we have the secret
       publi24: !!getApiKey("publi24"),
       homezz: !!getApiKey("homezz"),
     });
@@ -295,6 +297,16 @@ export default function Settings() {
               isConfigured={apiKeyStatuses.imobiliare}
               onAddKey={() => handleAddApiKey({ id: "imobiliare", name: "Imobiliare.ro" })}
               onTestConnection={() => handleTestConnection("imobiliare")}
+            />
+
+            <ApiKeySetting
+              platform="mva-imobiliare"
+              name="MVA IMOBILIARE"
+              description="Platforma MVA pentru publicarea automată a ofertelor"
+              website="https://mvaimobiliare.ro"
+              isConfigured={apiKeyStatuses['mva-imobiliare']}
+              onAddKey={() => handleAddApiKey({ id: "mva-imobiliare", name: "MVA IMOBILIARE" })}
+              onTestConnection={() => handleTestConnection("mva-imobiliare")}
             />
 
             <ApiKeySetting
