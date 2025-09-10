@@ -52,6 +52,13 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
       enabled: property.publishPlatforms?.includes('imobiliare') || true
     },
     {
+      id: 'mva-imobiliare',
+      name: 'MVA IMOBILIARE',
+      description: 'Platforma MVA pentru publicarea automată a ofertelor',
+      isConfigured: true,
+      enabled: property.publishPlatforms?.includes('mva-imobiliare') || true
+    },
+    {
       id: 'publi24',
       name: 'Publi24',
       description: 'Platformă de anunturi cu secțiune imobiliară',

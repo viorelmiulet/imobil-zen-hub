@@ -49,6 +49,13 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
       enabled: true
     },
     {
+      id: 'mva-imobiliare',
+      name: 'MVA IMOBILIARE',
+      description: 'Platforma MVA pentru publicarea automată a ofertelor',
+      isConfigured: true, // API key is configured
+      enabled: true
+    },
+    {
       id: 'publi24',
       name: 'Publi24',
       description: 'Platformă de anunturi cu secțiune imobiliară',
