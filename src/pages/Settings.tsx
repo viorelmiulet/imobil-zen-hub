@@ -87,7 +87,11 @@ export default function Settings() {
         body: { action: 'test' }
       });
       if (error) throw new Error((error as any)?.message || 'Eroare funcție edge');
-      if (data?.status === 401 || data?.status === 403) throw new Error('Cheie API invalidă');
+      // Considerăm conexiunea OK dacă ajungem la endpoint și cheia NU e respinsă
+      if (data?.forward_status === 401 || data?.forward_status === 403) {
+        throw new Error('Cheie API invalidă sau lipsă');
+      }
+      console.log('[MVA TEST]', data);
       return true;
     }
     const key = getApiKey(platform);

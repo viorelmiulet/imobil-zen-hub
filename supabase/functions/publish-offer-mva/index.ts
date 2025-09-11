@@ -132,16 +132,24 @@ serve(async (req: Request) => {
 
     const forwardResp = await fetch(target, forwardInit);
 
-    const data = await forwardResp.json().catch(() => ({ ok: forwardResp.ok }));
+    const payload = await forwardResp.json().catch(() => ({}));
 
-    const response = {
-      ok: forwardResp.ok,
-      status: forwardResp.status,
-      data,
-    };
+    const response = action === "test"
+      ? {
+          ok: true,
+          status: 200,
+          forward_status: forwardResp.status,
+          forward_ok: forwardResp.ok,
+          data: payload,
+        }
+      : {
+          ok: forwardResp.ok,
+          status: forwardResp.status,
+          data: payload,
+        };
 
     return new Response(JSON.stringify(response), {
-      status: forwardResp.ok ? 200 : forwardResp.status,
+      status: action === "test" ? 200 : (forwardResp.ok ? 200 : forwardResp.status),
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
