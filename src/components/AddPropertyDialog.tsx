@@ -146,10 +146,19 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const isMVAEnabled = platforms.some(p => p.id === 'mva-imobiliare' && p.enabled);
     if (!formData.title || !formData.price || !formData.location || !formData.type) {
       toast({
         title: "Eroare",
         description: "Te rugăm să completezi toate câmpurile obligatorii.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (isMVAEnabled && !formData.description.trim()) {
+      toast({
+        title: "Descriere necesară pentru MVA",
+        description: "Pentru a publica pe MVA IMOBILIARE, adaugă o descriere.",
         variant: "destructive",
       });
       return;
@@ -173,18 +182,29 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
 
       onPropertyAdded?.(newProperty);
 
-      // Publish to mvaimobiliare.ro via Edge Function (does not expose secret to frontend)
-      try {
-        await supabase.functions.invoke('publish-offer-mva', {
-          body: { action: 'create', offer: mapPropertyToOffer(newProperty) }
-        });
-      } catch (err) {
-        console.error('Publish to MVA failed:', err);
+      // Publică pe MVA doar dacă platforma este activată
+      if (isMVAEnabled) {
+        try {
+          const { data, error } = await supabase.functions.invoke('publish-offer-mva', {
+            body: { action: 'create', offer: mapPropertyToOffer(newProperty) }
+          });
+          if (error || !data?.ok) {
+            console.error('Publish to MVA failed:', error || data);
+            toast({
+              title: 'Publicare MVA eșuată',
+              description: (data?.data?.error || (error as any)?.message || 'Verifică: titlu, descriere, locație, preț minim, camere.'),
+              variant: 'destructive',
+            });
+          }
+        } catch (err: any) {
+          console.error('Publish to MVA failed:', err);
+          toast({ title: 'Publicare MVA eșuată', description: err?.message || 'Eroare neprevăzută', variant: 'destructive' });
+        }
       }
 
       toast({
         title: "Succes",
-        description: `Proprietatea a fost adăugată și va fi publicată pe ${platforms.filter(p => p.enabled).length} platforme.`,
+        description: `Proprietatea a fost adăugată. Publicarea pe platforme a fost inițiată pentru ${platforms.filter(p => p.enabled).length} platforme.`,
       });
 
       // Reset form
