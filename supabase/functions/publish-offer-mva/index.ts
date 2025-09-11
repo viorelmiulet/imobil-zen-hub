@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const BASE_URL = "https://gfobqeycviqckzjyokxf.supabase.co/functions/v1/public-api/offers";
 
-type Action = "create" | "update" | "delete";
+type Action = "create" | "update" | "delete" | "test";
 
 interface OfferPayload {
   title: string;
@@ -55,7 +55,7 @@ serve(async (req: Request) => {
     const offer: OfferPayload | undefined = body?.offer;
 
     let target = BASE_URL;
-    let method: "POST" | "PUT" | "DELETE" = "POST";
+    let method: "POST" | "PUT" | "DELETE" | "GET" = "POST";
 
     switch (action) {
       case "create":
@@ -111,20 +111,23 @@ serve(async (req: Request) => {
         }
         target = `${BASE_URL}/${encodeURIComponent(id)}`;
         break;
+      case "test":
+        method = "GET";
+        break;
       default:
         return new Response(JSON.stringify({ error: "Acțiune necunoscută" }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
-    }
+      }
 
     const forwardInit: RequestInit = {
       method,
       headers: {
         "x-api-key": apiKey,
-        ...(method !== "DELETE" ? { "Content-Type": "application/json" } : {}),
+        ...(method !== "DELETE" && method !== "GET" ? { "Content-Type": "application/json" } : {}),
       },
-      ...(method !== "DELETE" ? { body: JSON.stringify(offer) } : {}),
+      ...(method !== "DELETE" && method !== "GET" ? { body: JSON.stringify(offer) } : {}),
     };
 
     const forwardResp = await fetch(target, forwardInit);

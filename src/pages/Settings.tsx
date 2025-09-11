@@ -32,7 +32,7 @@ import ApiKeySetting from "@/components/settings/ApiKeySetting";
 import AddApiKeyDialog from "@/components/settings/AddApiKeyDialog";
 import { useTheme } from "@/components/theme-provider";
 import { useToast } from "@/hooks/use-toast";
-
+import { supabase } from "@/integrations/supabase/client";
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
@@ -82,7 +82,14 @@ export default function Settings() {
   };
 
   const handleTestConnection = async (platform: string) => {
-    // Test simplu: verifică dacă există o cheie salvată pentru platformă
+    if (platform === 'mva-imobiliare') {
+      const { data, error } = await supabase.functions.invoke('publish-offer-mva', {
+        body: { action: 'test' }
+      });
+      if (error) throw new Error((error as any)?.message || 'Eroare funcție edge');
+      if (data?.status === 401 || data?.status === 403) throw new Error('Cheie API invalidă');
+      return true;
+    }
     const key = getApiKey(platform);
     await new Promise((resolve) => setTimeout(resolve, 800));
     if (key) return true;
