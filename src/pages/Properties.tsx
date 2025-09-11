@@ -10,7 +10,8 @@ import {
   Square,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  Copy
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 import { EditPropertyDialog } from "@/components/EditPropertyDialog";
+import { PropertyPreviewDialog } from "@/components/PropertyPreviewDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import property1 from "@/assets/property-1.jpg";
@@ -128,6 +130,8 @@ export default function Properties() {
   const [propertiesList, setPropertiesList] = useState(properties);
   const [editingProperty, setEditingProperty] = useState<any>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [previewProperty, setPreviewProperty] = useState<any>(null);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
 
   const filteredProperties = propertiesList.filter((property) => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -176,6 +180,28 @@ export default function Properties() {
     });
   };
 
+  const handlePreviewProperty = (property: any) => {
+    setPreviewProperty(property);
+    setPreviewDialogOpen(true);
+  };
+
+  const handleCloneProperty = (property: any) => {
+    const clonedProperty = {
+      ...property,
+      id: Date.now(),
+      title: `${property.title} (Copie)`,
+      status: "Nou",
+      views: 0,
+      agentId: permissions.userId || property.agentId,
+    };
+    
+    setPropertiesList(prev => [...prev, clonedProperty]);
+    toast({
+      title: "Proprietate clonată",
+      description: "Proprietatea a fost clonată cu succes.",
+    });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {editingProperty && (
@@ -184,6 +210,14 @@ export default function Properties() {
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
           onPropertyUpdated={handleUpdateProperty}
+        />
+      )}
+
+      {previewProperty && (
+        <PropertyPreviewDialog
+          property={previewProperty}
+          open={previewDialogOpen}
+          onOpenChange={setPreviewDialogOpen}
         />
       )}
 
@@ -314,9 +348,19 @@ export default function Properties() {
                       variant="ghost" 
                       size="sm" 
                       className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      onClick={() => handlePreviewProperty(property)}
                       title="Vezi detalii"
                     >
                       <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-success hover:bg-success/10"
+                      onClick={() => handleCloneProperty(property)}
+                      title="Clonează anunțul"
+                    >
+                      <Copy className="h-4 w-4" />
                     </Button>
                     {canEditProperty(property) && (
                       <Button 
