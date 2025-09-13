@@ -44,6 +44,63 @@ export type Database = {
         }
         Relationships: []
       }
+      properties: {
+        Row: {
+          area: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string
+          description: string | null
+          external_id: string | null
+          id: string
+          images: string[] | null
+          location: string
+          price: number
+          source: string | null
+          status: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          area?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          images?: string[] | null
+          location: string
+          price?: number
+          source?: string | null
+          status?: string
+          title: string
+          type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          area?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          price?: number
+          source?: string | null
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           assigned_at: string | null

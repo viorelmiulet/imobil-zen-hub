@@ -22,6 +22,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AddPropertyDialog } from "@/components/AddPropertyDialog";
 import { EditPropertyDialog } from "@/components/EditPropertyDialog";
 import { PropertyPreviewDialog } from "@/components/PropertyPreviewDialog";
+import { ImportPropertiesDialog } from "@/components/ImportPropertiesDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import property1 from "@/assets/property-1.jpg";
@@ -231,11 +232,21 @@ export default function Properties() {
             Gestionează portofoliul de proprietăți al agenției tale.
           </p>
         </div>
-        <AddPropertyDialog 
-          onPropertyAdded={(newProperty) => {
-            setPropertiesList(prev => [...prev, newProperty]);
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <ImportPropertiesDialog 
+            onImportComplete={() => {
+              toast({
+                title: "Import finalizat",
+                description: "Proprietățile au fost importate cu succes",
+              });
+            }}
+          />
+          <AddPropertyDialog 
+            onPropertyAdded={(newProperty) => {
+              setPropertiesList(prev => [...prev, newProperty]);
+            }}
+          />
+        </div>
       </div>
 
       {/* Filters */}
