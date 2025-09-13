@@ -241,7 +241,7 @@ export default function Settings() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="agencyName">Numele Agenției</Label>
-                    <Input id="agencyName" placeholder="Numele agenției" defaultValue="RealEstate Pro București" />
+                    <Input id="agencyName" placeholder="Numele agenției" defaultValue="Zen CRM București" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="agencyAddress">Adresa</Label>
