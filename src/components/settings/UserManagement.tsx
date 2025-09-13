@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 
-const ROLES = ["admin", "manager", "agent", "user"] as const;
+const ROLES = ["admin", "user"] as const;
 
 type AppRole = typeof ROLES[number];
 
@@ -31,7 +31,7 @@ export function UserManagement() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [initialRole, setInitialRole] = useState<AppRole>("agent");
+  const [initialRole, setInitialRole] = useState<AppRole>("user");
 
   const canSubmit = useMemo(() => email && password && fullName && initialRole, [email, password, fullName, initialRole]);
 
@@ -92,7 +92,7 @@ export function UserManagement() {
       setEmail("");
       setPassword("");
       setFullName("");
-      setInitialRole("agent");
+      setInitialRole("user");
       await loadUsers();
     } catch (error: any) {
       console.error(error);

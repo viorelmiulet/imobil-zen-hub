@@ -145,7 +145,7 @@ export default function Properties() {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('properties')
+        .from('property_listings')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -159,15 +159,21 @@ export default function Properties() {
         // Fallback to mock data if database fetch fails
         setPropertiesList(properties);
       } else {
-        // Map database data to display format
-        const mappedProperties = data.map(prop => ({
-          ...prop,
-          price: `€${prop.price?.toLocaleString() || 0}`,
-          area: `${prop.area || 0} mp`,
-          image: prop.images?.[0] || property1, // Use first image or fallback
-          views: Math.floor(Math.random() * 100), // Mock views for now
-          agentId: prop.user_id || permissions.userId,
-        }));
+        const mappedProperties = data.map((prop: any) => {
+          const typeMap: Record<string, string> = { apartament: "Apartament", casa: "Casă", vila: "Vilă", garsoniera: "Garsonieră" };
+          const statusMap: Record<string, string> = { active: "Activ" };
+          return {
+            ...prop,
+            price: `€${(prop.price ?? 0).toLocaleString()}`,
+            area: `${prop.area_sqm ?? 0} mp`,
+            image: (prop.image_urls && prop.image_urls[0]) || property1,
+            type: typeMap[prop.property_type as string] || "Apartament",
+            status: statusMap[prop.status as string] || prop.status || "Activ",
+            views: Math.floor(Math.random() * 100),
+            agentId: permissions.userId,
+            location: prop.location || [prop.city, prop.county].filter(Boolean).join(", "),
+          };
+        });
         setPropertiesList(mappedProperties);
       }
     } catch (error) {
@@ -218,7 +224,7 @@ export default function Properties() {
   const handleDeleteProperty = async (propertyId: string) => {
     try {
       const { error } = await supabase
-        .from('properties')
+        .from('property_listings')
         .delete()
         .eq('id', propertyId);
 
@@ -257,21 +263,30 @@ export default function Properties() {
     try {
       const clonedProperty = {
         title: `${property.title} (Copie)`,
-        price: parseFloat(property.price.replace(/[€,]/g, '')) || 0,
+        price: Number(String(property.price).replace(/[€,]/g, '')) || 0,
         location: property.location,
-        type: property.type,
-        status: "Nou",
-        area: parseFloat(property.area) || 0,
+        property_type: (() => {
+          const map: Record<string, string> = { 
+            "Apartament": "apartament", 
+            "Casă": "casa", 
+            "Vilă": "vila", 
+            "Garsonieră": "garsoniera", 
+            "Studio": "apartament", 
+            "Penthouse": "apartament" 
+          };
+          return map[property.type] || "apartament";
+        })(),
+        status: "active",
+        area_sqm: typeof property.area === "number" ? property.area : (parseFloat(String(property.area)) || 0),
         bedrooms: property.bedrooms,
         bathrooms: property.bathrooms,
         description: property.description,
-        images: property.images || [],
-        source: 'clone',
-        user_id: permissions.userId,
-      };
+        image_urls: property.images || (property.image ? [property.image] : []),
+        feed_source: 'clone',
+      } as any;
 
       const { error } = await supabase
-        .from('properties')
+        .from('property_listings')
         .insert([clonedProperty]);
 
       if (error) {
