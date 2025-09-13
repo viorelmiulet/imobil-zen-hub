@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Building2, 
   Plus, 
@@ -25,6 +25,7 @@ import { PropertyPreviewDialog } from "@/components/PropertyPreviewDialog";
 import { ImportPropertiesDialog } from "@/components/ImportPropertiesDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
+import { supabase } from "@/integrations/supabase/client";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
@@ -128,11 +129,54 @@ export default function Properties() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [propertiesList, setPropertiesList] = useState(properties);
+  const [propertiesList, setPropertiesList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [editingProperty, setEditingProperty] = useState<any>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [previewProperty, setPreviewProperty] = useState<any>(null);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+
+  // Fetch properties from Supabase
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching properties:', error);
+        toast({
+          title: "Eroare",
+          description: "Nu s-au putut încărca proprietățile",
+          variant: "destructive",
+        });
+        // Fallback to mock data if database fetch fails
+        setPropertiesList(properties);
+      } else {
+        // Map database data to display format
+        const mappedProperties = data.map(prop => ({
+          ...prop,
+          price: `€${prop.price?.toLocaleString() || 0}`,
+          area: `${prop.area || 0} mp`,
+          image: prop.images?.[0] || property1, // Use first image or fallback
+          views: Math.floor(Math.random() * 100), // Mock views for now
+          agentId: prop.user_id || permissions.userId,
+        }));
+        setPropertiesList(mappedProperties);
+      }
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      setPropertiesList(properties); // Fallback to mock data
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredProperties = propertiesList.filter((property) => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -160,9 +204,7 @@ export default function Properties() {
   };
 
   const handleUpdateProperty = (updatedProperty: any) => {
-    setPropertiesList(prev => 
-      prev.map(p => p.id === updatedProperty.id ? updatedProperty : p)
-    );
+    fetchProperties(); // Refresh the list after update
   };
 
   const canEditProperty = (property: any) => {
@@ -173,12 +215,37 @@ export default function Properties() {
     return permissions.canDeleteAny || (permissions.canDeleteOwn && property.agentId === permissions.userId);
   };
 
-  const handleDeleteProperty = (propertyId: number) => {
-    setPropertiesList(prev => prev.filter(p => p.id !== propertyId));
-    toast({
-      title: "Proprietate ștearsă",
-      description: "Proprietatea a fost ștearsă cu succes.",
-    });
+  const handleDeleteProperty = async (propertyId: string) => {
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', propertyId);
+
+      if (error) {
+        console.error('Error deleting property:', error);
+        toast({
+          title: "Eroare",
+          description: "Nu s-a putut șterge proprietatea",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Remove from local state
+      setPropertiesList(prev => prev.filter(p => p.id !== propertyId));
+      toast({
+        title: "Proprietate ștearsă",
+        description: "Proprietatea a fost ștearsă cu succes.",
+      });
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast({
+        title: "Eroare",
+        description: "Nu s-a putut șterge proprietatea",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePreviewProperty = (property: any) => {
@@ -186,21 +253,50 @@ export default function Properties() {
     setPreviewDialogOpen(true);
   };
 
-  const handleCloneProperty = (property: any) => {
-    const clonedProperty = {
-      ...property,
-      id: Date.now(),
-      title: `${property.title} (Copie)`,
-      status: "Nou",
-      views: 0,
-      agentId: permissions.userId || property.agentId,
-    };
-    
-    setPropertiesList(prev => [...prev, clonedProperty]);
-    toast({
-      title: "Proprietate clonată",
-      description: "Proprietatea a fost clonată cu succes.",
-    });
+  const handleCloneProperty = async (property: any) => {
+    try {
+      const clonedProperty = {
+        title: `${property.title} (Copie)`,
+        price: parseFloat(property.price.replace(/[€,]/g, '')) || 0,
+        location: property.location,
+        type: property.type,
+        status: "Nou",
+        area: parseFloat(property.area) || 0,
+        bedrooms: property.bedrooms,
+        bathrooms: property.bathrooms,
+        description: property.description,
+        images: property.images || [],
+        source: 'clone',
+        user_id: permissions.userId,
+      };
+
+      const { error } = await supabase
+        .from('properties')
+        .insert([clonedProperty]);
+
+      if (error) {
+        console.error('Error cloning property:', error);
+        toast({
+          title: "Eroare",
+          description: "Nu s-a putut clona proprietatea",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      fetchProperties(); // Refresh the list
+      toast({
+        title: "Proprietate clonată",
+        description: "Proprietatea a fost clonată cu succes.",
+      });
+    } catch (error) {
+      console.error('Error cloning property:', error);
+      toast({
+        title: "Eroare",
+        description: "Nu s-a putut clona proprietatea",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -235,6 +331,7 @@ export default function Properties() {
         <div className="flex items-center gap-2">
           <ImportPropertiesDialog 
             onImportComplete={() => {
+              fetchProperties(); // Refresh the list after import
               toast({
                 title: "Import finalizat",
                 description: "Proprietățile au fost importate cu succes",
@@ -243,7 +340,7 @@ export default function Properties() {
           />
           <AddPropertyDialog 
             onPropertyAdded={(newProperty) => {
-              setPropertiesList(prev => [...prev, newProperty]);
+              fetchProperties(); // Refresh the list after adding
             }}
           />
         </div>
@@ -297,135 +394,157 @@ export default function Properties() {
       </Card>
 
       {/* Properties Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProperties.map((property, index) => (
-          <Card key={property.id} className="overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 animate-slide-up group" style={{ animationDelay: `${index * 100}ms` }}>
-            <div className="relative">
-              <img
-                src={property.image}
-                alt={property.title}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <Badge 
-                className={`absolute top-3 right-3 ${getStatusColor(property.status)} shadow-card`}
-              >
-                {property.status}
-              </Badge>
-              <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
-                <Eye className="h-3 w-3 text-white" />
-                <span className="text-xs text-white">{property.views}</span>
+      {isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="overflow-hidden shadow-card">
+              <div className="w-full h-48 bg-muted animate-pulse" />
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="h-6 bg-muted animate-pulse rounded" />
+                  <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+                  <div className="h-16 bg-muted animate-pulse rounded" />
+                  <div className="flex justify-between">
+                    <div className="h-8 bg-muted animate-pulse rounded w-24" />
+                    <div className="flex gap-1">
+                      <div className="h-8 w-8 bg-muted animate-pulse rounded" />
+                      <div className="h-8 w-8 bg-muted animate-pulse rounded" />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : filteredProperties.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredProperties.map((property, index) => (
+            <Card key={property.id} className="overflow-hidden shadow-card hover:shadow-hover transition-all duration-300 animate-slide-up group" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className="relative">
+                <img
+                  src={property.image}
+                  alt={property.title}
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <Badge 
+                  className={`absolute top-3 right-3 ${getStatusColor(property.status)} shadow-card`}
+                >
+                  {property.status}
+                </Badge>
+                <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
+                  <Eye className="h-3 w-3 text-white" />
+                  <span className="text-xs text-white">{property.views}</span>
+                </div>
               </div>
-            </div>
-            
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-lg text-foreground line-clamp-1">
-                    {property.title}
-                  </h3>
-                  <div className="flex items-center text-sm text-muted-foreground mt-1">
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {property.location}
-                  </div>
-                </div>
-
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {property.description}
-                </p>
-
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center">
-                      <Bed className="h-3 w-3 mr-1" />
-                      <span>{property.bedrooms}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Bath className="h-3 w-3 mr-1" />
-                      <span>{property.bathrooms}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Square className="h-3 w-3 mr-1" />
-                      <span>{property.area}</span>
+              
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground line-clamp-1">
+                      {property.title}
+                    </h3>
+                    <div className="flex items-center text-sm text-muted-foreground mt-1">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      {property.location}
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">
-                    {property.price}
-                  </span>
-                  <div className="flex items-center space-x-1">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                      onClick={() => handlePreviewProperty(property)}
-                      title="Vezi detalii"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-8 w-8 p-0 text-muted-foreground hover:text-success hover:bg-success/10"
-                      onClick={() => handleCloneProperty(property)}
-                      title="Clonează anunțul"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    {canEditProperty(property) && (
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {property.description}
+                  </p>
+
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center">
+                        <Bed className="h-3 w-3 mr-1" />
+                        <span>{property.bedrooms}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Bath className="h-3 w-3 mr-1" />
+                        <span>{property.bathrooms}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Square className="h-3 w-3 mr-1" />
+                        <span>{property.area}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-primary">
+                      {property.price}
+                    </span>
+                    <div className="flex items-center space-x-1">
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
-                        onClick={() => handleEditProperty(property)}
-                        title="Editează proprietatea"
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        onClick={() => handlePreviewProperty(property)}
+                        title="Vezi detalii"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
-                    )}
-                    {canDeleteProperty(property) && (
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                            title="Șterge proprietatea"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="bg-card border border-border shadow-hover">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className="text-foreground">Șterge proprietatea</AlertDialogTitle>
-                            <AlertDialogDescription className="text-muted-foreground">
-                              Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
-                              Anulează
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteProperty(property.id)}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-success hover:bg-success/10"
+                        onClick={() => handleCloneProperty(property)}
+                        title="Clonează anunțul"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      {canEditProperty(property) && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-info hover:bg-info/10"
+                          onClick={() => handleEditProperty(property)}
+                          title="Editează proprietatea"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {canDeleteProperty(property) && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                              title="Șterge proprietatea"
                             >
-                              Șterge
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    )}
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-card border border-border shadow-hover">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-foreground">Șterge proprietatea</AlertDialogTitle>
+                              <AlertDialogDescription className="text-muted-foreground">
+                                Ești sigur că vrei să ștergi această proprietate? Această acțiune nu poate fi anulată.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="bg-background border-border text-foreground hover:bg-muted">
+                                Anulează
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteProperty(property.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-card"
+                              >
+                                Șterge
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredProperties.length === 0 && (
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
         <Card className="shadow-card">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
@@ -436,9 +555,7 @@ export default function Properties() {
               Încearcă să modifici filtrele sau să adaugi o proprietate nouă.
             </p>
             <AddPropertyDialog 
-              onPropertyAdded={(newProperty) => {
-                setPropertiesList(prev => [...prev, newProperty]);
-              }}
+              onPropertyAdded={() => fetchProperties()}
             />
           </CardContent>
         </Card>
