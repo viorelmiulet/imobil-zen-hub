@@ -90,10 +90,10 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length + selectedImages.length > 5) {
+    if (files.length + selectedImages.length > 50) {
       toast({
         title: "Prea multe imagini",
-        description: "Poți adăuga maximum 5 imagini per proprietate.",
+        description: "Poți adăuga maximum 50 imagini per proprietate.",
         variant: "destructive",
       });
       return;
@@ -258,7 +258,7 @@ export function AddPropertyDialog({ onPropertyAdded }: AddPropertyDialogProps) {
               <div className="text-center">
                 <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <div className="text-sm text-muted-foreground mb-4">
-                  Adaugă până la 5 imagini (JPG, PNG, WebP)
+                  Adaugă până la 50 imagini (JPG, PNG, WebP)
                 </div>
                 <Button
                   type="button"

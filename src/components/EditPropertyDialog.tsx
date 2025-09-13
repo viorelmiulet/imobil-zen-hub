@@ -95,10 +95,10 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
     const files = Array.from(e.target.files || []);
     const totalImages = existingImages.length + selectedImages.length + files.length;
     
-    if (totalImages > 5) {
+    if (totalImages > 50) {
       toast({
         title: "Prea multe imagini",
-        description: "Poți avea maximum 5 imagini per proprietate.",
+        description: "Poți avea maximum 50 imagini per proprietate.",
         variant: "destructive",
       });
       return;
@@ -304,13 +304,13 @@ export function EditPropertyDialog({ property, open, onOpenChange, onPropertyUpd
               <div className="text-center">
                 <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <div className="text-sm text-muted-foreground mb-4">
-                  Adaugă imagini noi (maximum {5 - existingImages.length} imagini)
+                  Adaugă imagini noi (maximum {50 - existingImages.length} imagini)
                 </div>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={loading || existingImages.length >= 5}
+                  disabled={loading || existingImages.length >= 50}
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Selectează Imagini
