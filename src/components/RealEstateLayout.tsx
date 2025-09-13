@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import zenLogo from "@/assets/zen-crm-logo-single-e.png";
+import zenLogo from "@/assets/zen-logo-futuristic.png";
 
 const navigation = [
   { name: "Dashboard", href: "/crm", icon: Home },
@@ -69,9 +69,9 @@ export function RealEstateLayout() {
             {(sidebarOpen || !isMobile) && (
               <img 
                 src={zenLogo} 
-                alt="ZEN CRM" 
+                alt="Zen CRM" 
                 className="h-14 w-auto object-contain"
-                key="zen-crm-logo-single-e"
+                key="zen-logo-futuristic"
               />
             )}
             <Button
