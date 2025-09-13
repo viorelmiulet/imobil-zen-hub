@@ -70,7 +70,7 @@ export function RealEstateLayout() {
               <img 
                 src={zenLogo} 
                 alt="Zen CRM" 
-                className="h-10 w-auto object-contain"
+                className="h-14 w-auto object-contain"
                 key="zen-logo-futuristic"
               />
             )}
