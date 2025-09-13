@@ -67,7 +67,7 @@ export function RealEstateLayout() {
           <div className="flex h-16 items-center justify-between px-6 border-b border-border">
             {(sidebarOpen || !isMobile) && (
               <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                RealEstate Pro
+                Zen CRM
               </h1>
             )}
             <Button

@@ -28,7 +28,7 @@ const CompanyWebsite = () => {
               <Link to="/crm">
                 <Button className="bg-gradient-primary shadow-elegant hover:shadow-hover transition-all duration-300">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Acces CRM
+                  Acces Zen CRM
                 </Button>
               </Link>
             </div>

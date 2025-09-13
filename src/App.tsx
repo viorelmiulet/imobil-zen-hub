@@ -26,7 +26,7 @@ const App = () => (
             {/* Company Website */}
             <Route path="/" element={<CompanyWebsite />} />
             
-            {/* CRM System */}
+            {/* Zen CRM System */}
             <Route path="/crm" element={<RealEstateLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="properties" element={<Properties />} />
