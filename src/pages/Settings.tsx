@@ -33,9 +33,19 @@ import AddApiKeyDialog from "@/components/settings/AddApiKeyDialog";
 import { useTheme } from "@/components/theme-provider";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
+  
+  // Password change state
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // API keys stocate local pentru prototip (localStorage)
   const getApiKey = (platformId: string) => localStorage.getItem(`api_key_${platformId}`) || "";
@@ -98,6 +108,58 @@ export default function Settings() {
     await new Promise((resolve) => setTimeout(resolve, 800));
     if (key) return true;
     throw new Error("No key");
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast({
+        title: "Eroare",
+        description: "Parolele noi nu se potrivesc",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      toast({
+        title: "Eroare", 
+        description: "Parola nouă trebuie să aibă cel puțin 6 caractere",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwordForm.newPassword
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Parola schimbată",
+        description: "Parola a fost actualizată cu succes"
+      });
+      
+      setChangePasswordOpen(false);
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      });
+    } catch (error: any) {
+      toast({
+        title: "Eroare",
+        description: error.message || "Nu s-a putut schimba parola",
+        variant: "destructive"
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   return (
@@ -439,9 +501,71 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <Button variant="outline" className="w-full justify-start">
-                  Schimbă Parola
-                </Button>
+                <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start">
+                      <Key className="h-4 w-4 mr-2" />
+                      Schimbă Parola
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Schimbă Parola</DialogTitle>
+                      <DialogDescription>
+                        Introdu parola nouă pentru a actualiza contul tău.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handlePasswordChange} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="current-password">Parola actuală</Label>
+                        <Input
+                          id="current-password"
+                          type="password"
+                          value={passwordForm.currentPassword}
+                          onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
+                          placeholder="Parola actuală"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="new-password">Parola nouă</Label>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          value={passwordForm.newPassword}
+                          onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                          placeholder="Parola nouă (min. 6 caractere)"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirm-password">Confirmă parola nouă</Label>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          value={passwordForm.confirmPassword}
+                          onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                          placeholder="Confirmă parola nouă"
+                        />
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setChangePasswordOpen(false)}
+                          disabled={isChangingPassword}
+                        >
+                          Anulează
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={isChangingPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                          className="bg-primary text-primary-foreground"
+                        >
+                          {isChangingPassword ? "Se schimbă..." : "Schimbă Parola"}
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
                 <Button variant="outline" className="w-full justify-start">
                   Activează Autentificarea în Doi Pași
                 </Button>
