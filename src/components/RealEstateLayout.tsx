@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import zenLogo from "@/assets/zen-logo-futuristic.png";
+import { LogoZenCRM } from "@/components/LogoZenCRM";
 
 const navigation = [
   { name: "Dashboard", href: "/crm", icon: Home },
