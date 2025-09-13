@@ -15,6 +15,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import zenLogo from "@/assets/zen-crm-logo.png";
 
 const navigation = [
   { name: "Dashboard", href: "/crm", icon: Home },
@@ -66,9 +67,11 @@ export function RealEstateLayout() {
           {/* Logo */}
           <div className="flex h-16 items-center justify-between px-6 border-b border-border">
             {(sidebarOpen || !isMobile) && (
-              <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Zen CRM
-              </h1>
+              <img 
+                src={zenLogo} 
+                alt="Zen CRM" 
+                className="h-8 w-auto object-contain"
+              />
             )}
             <Button
               variant="ghost"
