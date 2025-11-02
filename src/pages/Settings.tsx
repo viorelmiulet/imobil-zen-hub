@@ -31,11 +31,14 @@ import { UserManagement } from "@/components/settings/UserManagement";
 import ApiKeySetting from "@/components/settings/ApiKeySetting";
 import AddApiKeyDialog from "@/components/settings/AddApiKeyDialog";
 import { useTheme } from "@/components/theme-provider";
+import { useInterfaceCustomization } from "@/contexts/InterfaceCustomizationContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export default function Settings() {
   const { theme, setTheme } = useTheme();
+  const { colorPalette, setColorPalette, interfaceDensity, setInterfaceDensity } = useInterfaceCustomization();
   const { toast } = useToast();
   
   // Password change state
@@ -486,6 +489,92 @@ export default function Settings() {
                     <SelectItem value="usd">USD ($)</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Paletă de Culori</Label>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Personalizează culorile interfeței CRM
+                  </p>
+                </div>
+                <RadioGroup value={colorPalette} onValueChange={(value) => setColorPalette(value as any)}>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="green" id="color-green" />
+                      <Label htmlFor="color-green" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-500"></div>
+                        Verde Neon
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="blue" id="color-blue" />
+                      <Label htmlFor="color-blue" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                        Albastru
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="purple" id="color-purple" />
+                      <Label htmlFor="color-purple" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                        Violet
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="red" id="color-red" />
+                      <Label htmlFor="color-red" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-red-500 to-orange-500"></div>
+                        Roșu
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="orange" id="color-orange" />
+                      <Label htmlFor="color-orange" className="flex items-center gap-2 cursor-pointer">
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-500"></div>
+                        Portocaliu
+                      </Label>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Densitate Interfață</Label>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Ajustează spațierea între elementele interfeței
+                  </p>
+                </div>
+                <RadioGroup value={interfaceDensity} onValueChange={(value) => setInterfaceDensity(value as any)}>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="compact" id="density-compact" />
+                      <Label htmlFor="density-compact" className="cursor-pointer">
+                        <div className="font-medium">Compact</div>
+                        <p className="text-xs text-muted-foreground">Mai multe informații pe ecran</p>
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="comfortable" id="density-comfortable" />
+                      <Label htmlFor="density-comfortable" className="cursor-pointer">
+                        <div className="font-medium">Confortabil</div>
+                        <p className="text-xs text-muted-foreground">Echilibru între spațiu și informație</p>
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="spacious" id="density-spacious" />
+                      <Label htmlFor="density-spacious" className="cursor-pointer">
+                        <div className="font-medium">Spațios</div>
+                        <p className="text-xs text-muted-foreground">Mai mult spațiu între elementele</p>
+                      </Label>
+                    </div>
+                  </div>
+                </RadioGroup>
               </div>
             </CardContent>
           </Card>
